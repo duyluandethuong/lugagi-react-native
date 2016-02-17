@@ -1,0 +1,15 @@
+{
+  "name": "Lugagi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "react-native start"
+  },
+  "dependencies": {
+    "react-native": "^0.14.2",
+    "react-native-image-picker": "^0.9.0",
+    "react-native-scrollable-tab-view": "^0.1.10",
+    "react-native-swiper": "^1.3.0",
+    "react-native-switcher": "^0.1.0"
+  }
+}
