@@ -151,16 +151,13 @@ var LoginPage = React.createClass({
 			fetch(searchURL, {method: "POST", body: loginBody})
 	        .then((response) => response.json())
 	        .then((responseData) => {
-	        	for (var i in responseData.LoginStatus) {
-	        		var loginStatus = responseData.LoginStatus[i].Status;
-	        		var errorMessage = responseData.LoginStatus[i].ErrorMessage;
-	        		var loginUserID = responseData.LoginStatus[i].CurrentUserID;
-	        		var loginUsername = responseData.LoginStatus[i].CurrentUsername;
-	        		var profileImageURL = responseData.LoginStatus[i].ProfileImageURL;
-	        	}
+	        	var loginStatus = responseData.LoginStatus.Status;
+        		var errorMessage = responseData.LoginStatus.ErrorMessage;
+        		var loginUserID = responseData.LoginStatus.CurrentUserID;
+        		var loginUsername = responseData.LoginStatus.CurrentUsername;
+        		var profileImageURL = responseData.LoginStatus.ProfileImageURL;
 
 	        	if (loginStatus == "success") {
-
 	        		AsyncStorage.setItem("currentUserID", loginUserID.toString());
 	        		AsyncStorage.setItem("currentUsername", loginUsername.toString());
 	        		AsyncStorage.setItem("currentUserProfileImageURL", profileImageURL.toString());

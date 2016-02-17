@@ -101,7 +101,7 @@ var IngredientSelection = React.createClass({
 		var searchString = this.state.searchString;
 
 		if (searchString =! null) {
-			var searchURL = "http://lugagi.com/script/ingredientRecommendation/generateFoodSuggestion.php?ingredientname[]=" + searchString;
+			var searchURL = "http://lugagi.com/script/ingredientRecommendation/generateFoodSuggestion.php?ingredientname[]=" + this.state.searchString;
 			console.log(searchURL);
 			//Display the loading icon
 			this.setState({ isLoading: true });

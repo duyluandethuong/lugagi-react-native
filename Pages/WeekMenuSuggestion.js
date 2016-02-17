@@ -134,9 +134,8 @@ var FoodCard = React.createClass({
 			return(
 				<TouchableOpacity onPress={() => this.goToFood(monAnID, "food")}>
 					<View style={styles.foodCard}>
-						<Image source={{uri: monAnImageURL}}
-				        		style={styles.foodImage}/>
-				    	<Text style={styles.foodName} numberOfLines={2}>{monAnName}</Text>
+						<Image source={{uri: monAnImageURL}} style={styles.foodImage}/>
+				    	<Text style={styles.foodName} numberOfLines={1}>{monAnName}</Text>
 				    	<TouchableOpacity>
 				    		<Text style={styles.buttonText} onPress={() => this.updateSuggestionData("edit")}>Đổi món</Text>
 				    	</TouchableOpacity>
