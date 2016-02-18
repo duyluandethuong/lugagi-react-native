@@ -2,6 +2,7 @@
  
 //var Swiper = require('react-native-swiper');
 var React = require('react-native');
+var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
   StyleSheet,
@@ -265,7 +266,7 @@ var FoodDetail = React.createClass({
 					<View style={styles.postUserInformation}>
 						<Image source={{uri: content.ProfileImageURL}}
 						  		style={styles.profilePic} />
-						<Text style={styles.contentName} numberOfLines={2}>{content.Username}</Text>
+						<Text style={[styles.contentName, lugagistyle.textAccent]} numberOfLines={2}>{content.Username}</Text>
 					</View>
 					<View style={styles.postContent}>
 						{postContent}

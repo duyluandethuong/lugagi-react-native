@@ -2,6 +2,7 @@
  
 var React = require('react-native');
 var SearchResults = require('./SearchResults');
+var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
   StyleSheet,
@@ -9,6 +10,7 @@ var {
   TextInput,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   Image,
   Component,
@@ -98,13 +100,14 @@ class SearchPage extends Component {
 		fetch(searchURL, {method: "GET"})
         .then((response) => response.json())
         .then((responseData) => {
+        	console.log(responseData);
         	this.setState({
-		      searchResultDataSource: this.state.searchResultDataSource.cloneWithRows(responseData.FoodSearchReults)
+		      searchResultDataSource: this.state.searchResultDataSource.cloneWithRows(responseData.FoodSearchResults)
 		    });
 		    this.props.navigator.push({
 			  title: 'Kết quả',
 			  component: SearchResults,
-			  passProps: {searchResultDataSource: responseData.FoodSearchReults}
+			  passProps: {searchResultDataSource: responseData.FoodSearchResults}
 			});
         })
         .done(() => {
@@ -125,17 +128,17 @@ class SearchPage extends Component {
 
 		        <View style={styles.searchView}>
 				  	<TextInput
-					    style={styles.searchInput}
+					    style={lugagistyle.textInput}
 					    value={this.state.searchString}
 					    onChange={this.onSearchTextChanged.bind(this)}
 					    placeholder='Nhập tên món ăn hoặc bộ sưu tập'/>
 				
-					<TouchableHighlight 
+					<TouchableOpacity 
 						style={styles.button}
 					    underlayColor='#99d9f4'
 					    onPress={this.onSearchPressed.bind(this)}>
-					  <Text style={styles.buttonText}>Tìm kiếm</Text>
-					</TouchableHighlight>
+					  <Text style={lugagistyle.buttonTextAccent}>Tìm kiếm</Text>
+					</TouchableOpacity>
 
 					{spinner}
 				</View>

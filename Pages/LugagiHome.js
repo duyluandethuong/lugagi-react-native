@@ -3,6 +3,7 @@
 //var Swiper = require('react-native-swiper');
 var React = require('react-native');
 var FoodDetail = require('./FoodDetail.js');
+var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
   StyleSheet,
@@ -10,6 +11,7 @@ var {
   TextInput,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   Image,
   Component,
@@ -44,19 +46,6 @@ var styles = StyleSheet.create({
   	},
   	rightContainer: {
 	    flex: 1,
-	},
-	buttonText: {
-		fontSize: 18,
-		color: '#48BBEC',
-		alignSelf: 'center'
-	},
-	button: {
-		height: 36,
-		flex: 1,
-		borderRadius: 5,
-		marginBottom: 10,
-		alignSelf: 'stretch',
-		justifyContent: 'center'
 	},
 	image: {
 		width: 500,
@@ -228,7 +217,7 @@ var LugagiHome = React.createClass({
 			<ScrollView style={styles.appBodyContainer}>
 				<View style={styles.randomFoodContainer}>
 					<View>
-						<Text style={styles.sectionTitle}>Nấu gì hôm nay?</Text>
+						<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Nấu gì hôm nay?</Text>
 					</View>
 
 					<TouchableHighlight onPress={this.goesToRandomFood}>
@@ -240,21 +229,21 @@ var LugagiHome = React.createClass({
 						</View>
 					</TouchableHighlight>
 
-					<TouchableHighlight style={styles.button}
-					    underlayColor='#99d9f4'
+					<TouchableOpacity style={lugagistyle.buttonAccent}
+					    underlayColor={lugagistyle.buttonAccentUnderlay}
 					    onPress={this.getRandomFood} >
-						<Text style={styles.buttonText}>Đổi món khác</Text>
-					</TouchableHighlight>
+						<Text style={lugagistyle.buttonTextAccent}>Đổi món khác</Text>
+					</TouchableOpacity>
 				</View>
 
-				<Text style={styles.sectionTitle}>Chọn bởi Lugagi</Text>
+				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Chọn bởi Lugagi</Text>
 				<ListView
 				    dataSource={this.state.dataSource}
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
 				    horizontal="true"/>
 
-				<Text style={styles.sectionTitle}>Món ăn mới nhất</Text>
+				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Món ăn mới nhất</Text>
 				<ListView
 				    dataSource={this.state.latestFoodSource}
 				    renderRow={this.renderContentList}
@@ -262,7 +251,7 @@ var LugagiHome = React.createClass({
 				    contentContainerStyle={styles.list}
 				    horizontal="true"/>
 
-				<Text style={styles.sectionTitle}>Có thể bạn thích</Text>
+				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Có thể bạn thích</Text>
 				<ListView
 				    dataSource={this.state.dataSource}
 				    renderRow={this.renderContentList}

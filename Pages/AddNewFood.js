@@ -2,6 +2,10 @@
  
 var React = require('react-native');
 var SearchResults = require('./SearchResults');
+var FoodDetail = require('./FoodDetail.js');
+
+var lugagistyle = require('../Styles/lugagistyle.js');
+var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
 var {
   StyleSheet,
@@ -9,6 +13,7 @@ var {
   TextInput,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AlertIOS,
   AsyncStorage,
@@ -20,8 +25,6 @@ var {
     UIImagePickerManager
   }
 } = React;
-
-var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
 //Create class for the page
 var AddNewFood =  React.createClass({
@@ -94,7 +97,6 @@ var AddNewFood =  React.createClass({
 	        else {
 	          // You can display the image using either:
 	         	const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
-	          	//const source = {uri: response.uri.replace('file://', ''), isStatic: true};
 				this.setState({
 					foodImageSource: source,
 					showFoodImage: true,
@@ -109,14 +111,16 @@ var AddNewFood =  React.createClass({
 	//Code to handle the find button
 	onCreateNewFoodPressed: function() {
 		var searchString = this.state.searchString;
-		var searchURL = "http://lugagi.com/script/smartPhoneAPI/food/themmonan.php";
+		var searchURL = "http://lugagi.com/script/food/themmonan.php";
 		var fetchBody = "";
 
 		fetchBody = fetchBody + "CurrentUserID=" + this.state.currentUserID;
 		fetchBody = fetchBody + "&TenMon=" + this.state.newFoodName;
 		fetchBody = fetchBody + "&MoTa=" + this.state.newFoodDescription;
 		fetchBody = fetchBody + "&LoaiMonAn=" + "2";
-		fetchBody = fetchBody + "&foodImageString=" + this.state.foodImageSource.uri;
+		fetchBody = fetchBody + "&foodImageString=" + encodeURIComponent(this.state.foodImageSource.uri); 
+		//Must have encodeURIComponent here for the base 64 string to works
+		//https://github.com/marcshilling/react-native-image-picker
 
 		//Display the loading icon
 		this.setState({ isLoading: true});
@@ -127,11 +131,22 @@ var AddNewFood =  React.createClass({
         .then((responseData) => {
         		console.log(responseData);
         		this.setState({ isLoading: false });
-		 //    this.props.navigator.push({
-			//   title: 'Kết quả',
-			//   component: SearchResults,
-			//   passProps: {searchResultDataSource: responseData.FoodSearchReults}
-			// });
+
+        		var submitStatus = responseData.InsertNewFoodResult[0].Status;
+
+        		if (submitStatus == "success") {
+				    this.props.navigator.push({
+					  title: 'Món ăn',
+					  component: FoodDetail,
+					  passProps: {foodID: responseData.InsertNewFoodResult[0].MonAnID}
+					});
+				}
+				else {
+					AlertIOS.alert(
+			            'Không thể tạo món mới',
+			            responseData.InsertNewFoodResult[0].ErrorMessage
+		            );
+				}
         })
         .done(() => {
         	//Hide the loading icon
@@ -163,32 +178,32 @@ var AddNewFood =  React.createClass({
 
 		        <View style={styles.searchView}>
 				  	<TextInput
-					    style={styles.searchInput}
+					    style={lugagistyle.textInput}
 					    value={this.state.searchString}
 					    onChange={this.onFoodNameChange}
 					    placeholder='Tên món ăn'/>
 
 					<TextInput
-					    style={styles.searchInput}
+					    style={lugagistyle.textInput}
 					    value={this.state.searchString}
 					    onChange={this.onFoodDescriptionChange}
 					    placeholder='Mô tả'/>
 					
-					<TouchableHighlight 
+					<TouchableOpacity
 						style={styles.button}
 					    underlayColor='#99d9f4'
 					    onPress={this.onSelectImageClicked}>
-					  <Text style={styles.buttonText}>Chọn ảnh cho món ăn</Text>
-					</TouchableHighlight>
+					  <Text style={lugagistyle.buttonTextAccent}>Chọn ảnh cho món ăn</Text>
+					</TouchableOpacity>
 
 					{foodImage}
 
-					<TouchableHighlight 
+					<TouchableOpacity 
 						style={styles.button}
 					    underlayColor='#99d9f4'
 					    onPress={this.onCreateNewFoodPressed}>
-					  <Text style={styles.buttonText}>Tạo mới</Text>
-					</TouchableHighlight>
+					  <Text style={lugagistyle.buttonTextAccent}>Tạo mới</Text>
+					</TouchableOpacity>
 
 					{spinner}
 				</View>
@@ -207,32 +222,6 @@ var styles = StyleSheet.create({
   	searchView: {
 		alignItems: 'center',
 		alignSelf: 'stretch'
-	},
-	buttonText: {
-		fontSize: 18,
-		color: '#48BBEC',
-		alignSelf: 'center'
-	},
-	button: {
-		height: 36,
-		flex: 1,
-		borderRadius: 5,
-		marginBottom: 10,
-		alignSelf: 'stretch',
-		justifyContent: 'center'
-	},
-	searchInput: {
-		height: 36,
-		padding: 4,
-		marginLeft: 20,
-		marginRight: 20,
-		marginTop: 10,
-		flex: 4,
-		fontSize: 16,
-		borderWidth: 1,
-		borderColor: '#48BBEC',
-		borderRadius: 3,
-		color: '#48BBEC'
 	},
 	thumb: {
 		width: 300,

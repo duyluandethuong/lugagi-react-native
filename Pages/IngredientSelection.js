@@ -2,6 +2,7 @@
  
 var React = require('react-native');
 var FoodDetail = require('./FoodDetail.js');
+var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
   StyleSheet,
@@ -31,28 +32,6 @@ var styles = StyleSheet.create({
 		alignItems: 'center',
 		alignSelf: 'stretch'
 	},
-	buttonText: {
-		fontSize: 18,
-		color: '#48BBEC',
-		alignSelf: 'center'
-	},
-	button: {
-		height: 36,
-		flex: 1,
-		borderRadius: 5,
-		marginBottom: 10,
-		alignSelf: 'stretch',
-		justifyContent: 'center'
-	},
-	searchInput: {
-		height: 36,
-		padding: 4,
-		margin: 20,
-		fontSize: 16,
-		borderWidth: 1,
-		borderColor: '#48BBEC',
-		borderRadius: 3,
-	},
 	thumb: {
 		width: 80,
 		height: 80,
@@ -64,14 +43,6 @@ var styles = StyleSheet.create({
 	separator: {
 		height: 1,
 		backgroundColor: '#dddddd'
-	},
-	title: {
-		fontSize: 15,
-		fontWeight: 'bold',
-		color: '#48BBEC'
-	},
-	description: {
-		color: '#dddddd',
 	},
 	rowContainer: {
 		flexDirection: 'row',
@@ -137,8 +108,8 @@ var IngredientSelection = React.createClass({
 	            <View style={styles.rowContainer}>
 	              <Image style={styles.thumb} source={{uri: fullImageURL}} />
 	              <View  style={styles.textContainer}>
-	                <Text style={styles.title}>{content.MonAnName}</Text>
-	                <Text style={styles.description} 
+	                <Text style={lugagistyle.cardTitle}>{content.MonAnName}</Text>
+	                <Text style={lugagistyle.textMuted} 
 	                      numberOfLines={3}>{content.MonAnDescription}</Text>
 	              </View>
 	            </View>
@@ -168,22 +139,22 @@ var IngredientSelection = React.createClass({
 			( <View/>);
 	    return (
 	      	<ScrollView style={styles.appBodyContainer}>
-	      		<Text style={styles.introduction}>
+	      		<Text style={[lugagistyle.textMuted, styles.introduction]}>
 	      			Bạn có thể nhập nhiều nguyên liệu bằng cách dùng dấu phẩy khi nhập hoặc nhấn nút chèn nguyên liệu.
 	      		</Text>
 	      		<View style={styles.TextInputList}>
 		      		<TextInput
-						    style={styles.searchInput}
+						    style={lugagistyle.textInput}
 						    value={this.state.searchString}
 						    onChange={this.onSearchTextChanged.bind(this)}
 						    placeholder='Nhập tên món ăn hoặc bộ sưu tập'/>
 				</View>
 				<View>
 					<TouchableOpacity 
-						style={styles.button}
+						style={lugagistyle.buttonAccent}
 					    underlayColor='#99d9f4'
 					    onPress={this.onSearchPressed.bind(this)}>
-					  <Text style={styles.buttonText}>Gợi ý</Text>
+					  <Text style={lugagistyle.buttonTextAccent}>Gợi ý</Text>
 					</TouchableOpacity>
 					{spinner}
 				</View>

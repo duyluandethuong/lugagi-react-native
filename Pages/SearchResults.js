@@ -2,6 +2,7 @@
  
 var React = require('react-native');
 var FoodDetail = require('./FoodDetail.js');
+var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
   StyleSheet,
@@ -26,14 +27,6 @@ var styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#dddddd'
   },
-  title: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#48BBEC'
-  },
-  description: {
-    color: '#dddddd',
-  },
   rowContainer: {
     flexDirection: 'row',
     padding: 10
@@ -52,7 +45,7 @@ class SearchResults extends Component {
   }
  
   renderRow(content) {
-    var fullImageURL = "http://lugagi.com" + content.ImageURL;
+    var fullImageURL = "http://lugagi.com/script/timthumb.php?src=" + content.ImageURL + "&w=200&h=200&q=50";
     return (
         <TouchableHighlight 
             underlayColor='#dddddd'
@@ -61,8 +54,8 @@ class SearchResults extends Component {
             <View style={styles.rowContainer}>
               <Image style={styles.thumb} source={{uri: fullImageURL}} />
               <View  style={styles.textContainer}>
-                <Text style={styles.title}>{content.MonAnName}</Text>
-                <Text style={styles.description} 
+                <Text style={lugagistyle.cardTitle}>{content.MonAnName}</Text>
+                <Text style={lugagistyle.textMuted} 
                       numberOfLines={3}>{content.MonAnDescription}</Text>
               </View>
             </View>
