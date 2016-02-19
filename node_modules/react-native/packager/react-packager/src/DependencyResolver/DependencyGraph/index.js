@@ -8,76 +8,64 @@
  */
 'use strict';
 
-const Activity = require('../../Activity');
 const Fastfs = require('../fastfs');
 const ModuleCache = require('../ModuleCache');
 const Promise = require('promise');
 const crawl = require('../crawlers');
-const declareOpts = require('../../lib/declareOpts');
-const getPontentialPlatformExt = require('../../lib/getPlatformExtension');
+const getPlatformExtension = require('../lib/getPlatformExtension');
 const isAbsolutePath = require('absolute-path');
 const path = require('path');
 const util = require('util');
-const Helpers = require('./Helpers');
+const DependencyGraphHelpers = require('./DependencyGraphHelpers');
 const ResolutionRequest = require('./ResolutionRequest');
 const ResolutionResponse = require('./ResolutionResponse');
 const HasteMap = require('./HasteMap');
 const DeprecatedAssetMap = require('./DeprecatedAssetMap');
 
-const validateOpts = declareOpts({
-  roots: {
-    type: 'array',
-    required: true,
-  },
-  ignoreFilePath: {
-    type: 'function',
+const ERROR_BUILDING_DEP_GRAPH = 'DependencyGraphError';
 
-    default: function(){}
-  },
-  fileWatcher: {
-    type: 'object',
-    required: true,
-  },
-  assetRoots_DEPRECATED: {
-    type: 'array',
-    default: [],
-  },
-  assetExts: {
-    type: 'array',
-    required: true,
-  },
-  providesModuleNodeModules: {
-    type: 'array',
-    default: [
-      'react-tools',
-      'react-native',
-      // Parse requires AsyncStorage. They will
-      // change that to require('react-native') which
-      // should work after this release and we can
-      // remove it from here.
-      'parse',
-    ],
-  },
-  platforms: {
-    type: 'array',
-    default: ['ios', 'android'],
-  },
-  cache: {
-    type: 'object',
-    required: true,
-  },
-});
+const defaultActivity = {
+  startEvent: () => {},
+  endEvent: () => {},
+};
 
 class DependencyGraph {
-  constructor(options) {
-    this._opts = validateOpts(options);
-    this._cache = this._opts.cache;
-    this._helpers = new Helpers(this._opts);
-    this.load().catch((err) => {
-      // This only happens at initialization. Live errors are easier to recover from.
-      console.error('Error building DepdendencyGraph:\n', err.stack);
-      process.exit(1);
-    });
+  constructor({
+    activity,
+    roots,
+    ignoreFilePath,
+    fileWatcher,
+    assetRoots_DEPRECATED,
+    assetExts,
+    providesModuleNodeModules,
+    platforms,
+    preferNativePlatform,
+    cache,
+    extensions,
+    mocksPattern,
+    extractRequires,
+    transformCode,
+    shouldThrowOnUnresolvedErrors = () => true,
+  }) {
+    this._opts = {
+      activity: activity || defaultActivity,
+      roots,
+      ignoreFilePath: ignoreFilePath || (() => {}),
+      fileWatcher,
+      assetRoots_DEPRECATED: assetRoots_DEPRECATED || [],
+      assetExts: assetExts || [],
+      providesModuleNodeModules,
+      platforms: platforms || [],
+      preferNativePlatform: preferNativePlatform || false,
+      extensions: extensions || ['js', 'json'],
+      mocksPattern,
+      extractRequires,
+      shouldThrowOnUnresolvedErrors,
+      transformCode,
+    };
+    this._cache = cache;
+    this._helpers = new DependencyGraphHelpers(this._opts);
+    this.load();
   }
 
   load() {
@@ -85,15 +73,16 @@ class DependencyGraph {
       return this._loading;
     }
 
-    const depGraphActivity = Activity.startEvent('Building Dependency Graph');
-    const crawlActivity = Activity.startEvent('Crawling File System');
+    const {activity} = this._opts;
+    const depGraphActivity = activity.startEvent('Building Dependency Graph');
+    const crawlActivity = activity.startEvent('Crawling File System');
     const allRoots = this._opts.roots.concat(this._opts.assetRoots_DEPRECATED);
     this._crawling = crawl(allRoots, {
       ignore: this._opts.ignoreFilePath,
-      exts: ['js', 'json'].concat(this._opts.assetExts),
+      exts: this._opts.extensions.concat(this._opts.assetExts),
       fileWatcher: this._opts.fileWatcher,
     });
-    this._crawling.then((files) => Activity.endEvent(crawlActivity));
+    this._crawling.then((files) => activity.endEvent(crawlActivity));
 
     this._fastfs = new Fastfs(
       'JavaScript',
@@ -102,17 +91,25 @@ class DependencyGraph {
       {
         ignore: this._opts.ignoreFilePath,
         crawling: this._crawling,
+        activity: activity,
       }
     );
 
     this._fastfs.on('change', this._processFileChange.bind(this));
 
-    this._moduleCache = new ModuleCache(this._fastfs, this._cache);
+    this._moduleCache = new ModuleCache({
+      fastfs: this._fastfs,
+      cache: this._cache,
+      extractRequires: this._opts.extractRequires,
+      transformCode: this._opts.transformCode,
+      depGraphHelpers: this._helpers,
+    });
 
     this._hasteMap = new HasteMap({
       fastfs: this._fastfs,
+      extensions: this._opts.extensions,
       moduleCache: this._moduleCache,
-      assetExts: this._opts.exts,
+      preferNativePlatform: this._opts.preferNativePlatform,
       helpers: this._helpers,
     });
 
@@ -123,48 +120,89 @@ class DependencyGraph {
       fileWatcher: this._opts.fileWatcher,
       ignoreFilePath: this._opts.ignoreFilePath,
       assetExts: this._opts.assetExts,
+      activity: this._opts.activity,
     });
 
     this._loading = Promise.all([
       this._fastfs.build()
         .then(() => {
-          const hasteActivity = Activity.startEvent('Building Haste Map');
-          return this._hasteMap.build().then(() => Activity.endEvent(hasteActivity));
+          const hasteActivity = activity.startEvent('Building Haste Map');
+          return this._hasteMap.build().then(() => activity.endEvent(hasteActivity));
         }),
       this._deprecatedAssetMap.build(),
     ]).then(() =>
-      Activity.endEvent(depGraphActivity)
-    );
+      activity.endEvent(depGraphActivity)
+    ).catch(err => {
+      const error = new Error(
+        `Failed to build DependencyGraph: ${err.message}`
+      );
+      error.type = ERROR_BUILDING_DEP_GRAPH;
+      error.stack = err.stack;
+      throw error;
+    });
 
     return this._loading;
   }
 
-  getDependencies(entryPath, platform) {
+  /**
+   * Returns a promise with the direct dependencies the module associated to
+   * the given entryPath has.
+   */
+  getShallowDependencies(entryPath) {
+    return this._moduleCache.getModule(entryPath).getDependencies();
+  }
+
+  getFS() {
+    return this._fastfs;
+  }
+
+  /**
+   * Returns the module object for the given path.
+   */
+  getModuleForPath(entryFile) {
+    return this._moduleCache.getModule(entryFile);
+  }
+
+  getAllModules() {
+    return this.load().then(() => this._moduleCache.getAllModules());
+  }
+
+  getDependencies(entryPath, platform, recursive = true) {
     return this.load().then(() => {
       platform = this._getRequestPlatform(entryPath, platform);
       const absPath = this._getAbsolutePath(entryPath);
       const req = new ResolutionRequest({
         platform,
+        preferNativePlatform: this._opts.preferNativePlatform,
         entryPath: absPath,
         deprecatedAssetMap: this._deprecatedAssetMap,
         hasteMap: this._hasteMap,
         helpers: this._helpers,
         moduleCache: this._moduleCache,
         fastfs: this._fastfs,
+        shouldThrowOnUnresolvedErrors: this._opts.shouldThrowOnUnresolvedErrors,
       });
 
       const response = new ResolutionResponse();
 
       return Promise.all([
-        req.getOrderedDependencies(response),
+        req.getOrderedDependencies(
+          response,
+          this._opts.mocksPattern,
+          recursive,
+        ),
         req.getAsyncDependencies(response),
       ]).then(() => response);
     });
   }
 
+  matchFilesByPattern(pattern) {
+    return this.load().then(() => this._fastfs.matchFilesByPattern(pattern));
+  }
+
   _getRequestPlatform(entryPath, platform) {
     if (platform == null) {
-      platform = getPontentialPlatformExt(entryPath);
+      platform = getPlatformExtension(entryPath);
       if (platform == null || this._opts.platforms.indexOf(platform) === -1) {
         platform = null;
       }
@@ -211,9 +249,13 @@ class DependencyGraph {
     // we are in an error state and we should decide to do a full rebuild.
     this._loading = this._loading.finally(() => {
       if (this._hasteMapError) {
+        console.warn(
+          'Rebuilding haste map to recover from error:\n' +
+          this._hasteMapError.stack
+        );
         this._hasteMapError = null;
+
         // Rebuild the entire map if last change resulted in an error.
-        console.warn('Rebuilding haste map to recover from error');
         this._loading = this._hasteMap.build();
       } else {
         this._loading = this._hasteMap.processFileChange(type, absPath);
@@ -222,6 +264,7 @@ class DependencyGraph {
       return this._loading;
     });
   }
+
 }
 
 function NotFoundError() {

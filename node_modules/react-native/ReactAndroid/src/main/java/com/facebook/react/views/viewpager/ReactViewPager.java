@@ -49,6 +49,19 @@ import com.facebook.react.uimanager.events.NativeGestureUtil;
       setOffscreenPageLimit(mViews.size());
     }
 
+    void removeViewAt(int index) {
+      mViews.remove(index);
+      notifyDataSetChanged();
+
+      // TODO(7323049): Remove this workaround once we figure out a way to re-layout some views on
+      // request
+      setOffscreenPageLimit(mViews.size());
+    }
+
+    View getViewAt(int index) {
+      return mViews.get(index);
+    }
+
     @Override
     public int getCount() {
       return mViews.size();
@@ -91,7 +104,22 @@ import com.facebook.react.uimanager.events.NativeGestureUtil;
 
     @Override
     public void onPageScrollStateChanged(int state) {
-      // don't send events
+      String pageScrollState;
+      switch (state) {
+        case SCROLL_STATE_IDLE:
+          pageScrollState = "idle";
+          break;
+        case SCROLL_STATE_DRAGGING:
+          pageScrollState = "dragging";
+          break;
+        case SCROLL_STATE_SETTLING:
+          pageScrollState = "settling";
+          break;
+        default:
+          throw new IllegalStateException("Unsupported pageScrollState");
+      }
+      mEventDispatcher.dispatchEvent(
+        new PageScrollStateChangedEvent(getId(), SystemClock.uptimeMillis(), pageScrollState));
     }
   }
 
@@ -120,13 +148,25 @@ import com.facebook.react.uimanager.events.NativeGestureUtil;
     return false;
   }
 
-  /* package */ void addViewToAdapter(View child, int index) {
+  public void setCurrentItemFromJs(int item, boolean animated) {
+    mIsCurrentItemFromJs = true;
+    setCurrentItem(item, animated);
+    mIsCurrentItemFromJs = false;
+  }
+
+  /*package*/ void addViewToAdapter(View child, int index) {
     getAdapter().addView(child, index);
   }
 
-  /* package */ void setCurrentItemFromJs(int item) {
-    mIsCurrentItemFromJs = true;
-    setCurrentItem(item);
-    mIsCurrentItemFromJs = false;
+  /*package*/ void removeViewFromAdapter(int index) {
+    getAdapter().removeViewAt(index);
+  }
+
+  /*package*/ int getViewCountInAdapter() {
+    return getAdapter().getCount();
+  }
+
+  /*package*/ View getViewFromAdapter(int index) {
+    return getAdapter().getViewAt(index);
   }
 }

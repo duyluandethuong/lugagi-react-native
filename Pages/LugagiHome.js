@@ -241,7 +241,7 @@ var LugagiHome = React.createClass({
 				    dataSource={this.state.dataSource}
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
-				    horizontal="true"/>
+				    horizontal={true}/>
 
 				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Món ăn mới nhất</Text>
 				<ListView
@@ -249,14 +249,14 @@ var LugagiHome = React.createClass({
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
 				    contentContainerStyle={styles.list}
-				    horizontal="true"/>
+				    horizontal={true}/>
 
 				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Có thể bạn thích</Text>
 				<ListView
 				    dataSource={this.state.dataSource}
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
-				    horizontal="true"/>
+				    horizontal={true}/>
 
 			</ScrollView>
 		);

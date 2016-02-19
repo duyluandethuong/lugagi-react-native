@@ -14,6 +14,7 @@
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
 #import "RCTLog.h"
+#import "RCTRefreshControl.h"
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
 #import "UIView+Private.h"
@@ -57,11 +58,6 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)init)
-
-- (uint16_t)coalescingKey
-{
-  return 0;
-}
 
 - (NSDictionary *)body
 {
@@ -117,7 +113,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (RCTScrollEvent *)coalesceWithEvent:(RCTScrollEvent *)newEvent
 {
-  NSArray *updatedChildFrames = [_userData[@"updatedChildFrames"] arrayByAddingObjectsFromArray:newEvent->_userData[@"updatedChildFrames"]];
+  NSArray<NSDictionary *> *updatedChildFrames = [_userData[@"updatedChildFrames"] arrayByAddingObjectsFromArray:newEvent->_userData[@"updatedChildFrames"]];
 
   if (updatedChildFrames) {
     NSMutableDictionary *userData = [newEvent->_userData mutableCopy];
@@ -133,6 +129,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   return @"RCTEventEmitter.receiveEvent";
 }
 
+- (NSArray *)arguments
+{
+  return @[self.viewTag, RCTNormalizeInputEventName(self.eventName), [self body]];
+}
+
 @end
 
 /**
@@ -144,6 +145,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 @property (nonatomic, copy) NSIndexSet *stickyHeaderIndices;
 @property (nonatomic, assign) BOOL centerContent;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end
 
@@ -181,7 +183,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (void)handleCustomPan:(__unused UIPanGestureRecognizer *)sender
 {
-  if ([self _shouldDisableScrollInteraction]) {
+  if ([self _shouldDisableScrollInteraction] && ![[RCTUIManager JSResponder] isKindOfClass:[RCTScrollView class]]) {
     self.panGestureRecognizer.enabled = NO;
     self.panGestureRecognizer.enabled = YES;
     // TODO: If mid bounce, animate the scroll view to a non-bounced position
@@ -273,6 +275,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 {
   UIView *contentView = [self contentView];
   CGFloat scrollTop = self.bounds.origin.y + self.contentInset.top;
+  // If the RefreshControl is refreshing, remove it's height so sticky headers are
+  // positioned properly when scrolling down while refreshing.
+  if (self.refreshControl != nil && self.refreshControl.refreshing) {
+    scrollTop -= self.refreshControl.frame.size.height;
+  }
 
   // Find the section headers that need to be docked
   __block UIView *previousHeader = nil;
@@ -352,6 +359,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   return hitView ?: [super hitTest:point withEvent:event];
 }
 
+- (void)setRefreshControl:(UIRefreshControl *)refreshControl
+{
+  if (_refreshControl) {
+    [_refreshControl removeFromSuperview];
+  }
+  _refreshControl = refreshControl;
+  [self addSubview:_refreshControl];
+}
+
 @end
 
 @implementation RCTScrollView
@@ -360,12 +376,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   RCTCustomScrollView *_scrollView;
   UIView *_contentView;
   NSTimeInterval _lastScrollDispatchTime;
-  NSMutableArray *_cachedChildFrames;
+  NSMutableArray<NSValue *> *_cachedChildFrames;
   BOOL _allowNextScrollNoMatterWhat;
   CGRect _lastClippedToRect;
 }
 
-@synthesize nativeMainScrollDelegate = _nativeMainScrollDelegate;
+@synthesize nativeScrollDelegate = _nativeScrollDelegate;
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
 {
@@ -400,20 +416,31 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)insertReactSubview:(UIView *)view atIndex:(__unused NSInteger)atIndex
 {
-  RCTAssert(_contentView == nil, @"RCTScrollView may only contain a single subview");
-  _contentView = view;
-  [_scrollView addSubview:view];
+  if ([view isKindOfClass:[RCTRefreshControl class]]) {
+    _scrollView.refreshControl = (RCTRefreshControl*)view;
+  } else {
+    RCTAssert(_contentView == nil, @"RCTScrollView may only contain a single subview");
+    _contentView = view;
+    [_scrollView addSubview:view];
+  }
 }
 
 - (void)removeReactSubview:(UIView *)subview
 {
-  RCTAssert(_contentView == subview, @"Attempted to remove non-existent subview");
-  _contentView = nil;
-  [subview removeFromSuperview];
+  if ([subview isKindOfClass:[RCTRefreshControl class]]) {
+    _scrollView.refreshControl = nil;
+  } else {
+    RCTAssert(_contentView == subview, @"Attempted to remove non-existent subview");
+    _contentView = nil;
+    [subview removeFromSuperview];
+  }
 }
 
-- (NSArray *)reactSubviews
+- (NSArray<UIView *> *)reactSubviews
 {
+  if (_contentView && _scrollView.refreshControl) {
+    return @[_contentView, _scrollView.refreshControl];
+  }
   return _contentView ? @[_contentView] : @[];
 }
 
@@ -532,14 +559,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)delegateMethod:(UIScrollView *)scrollView           \
 {                                                           \
   [_eventDispatcher sendScrollEventWithType:eventName reactTag:self.reactTag scrollView:scrollView userData:nil]; \
-  if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
-    [_nativeMainScrollDelegate delegateMethod:scrollView]; \
+  if ([_nativeScrollDelegate respondsToSelector:_cmd]) { \
+    [_nativeScrollDelegate delegateMethod:scrollView]; \
   } \
 }
 
 #define RCT_FORWARD_SCROLL_EVENT(call) \
-if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
-  [_nativeMainScrollDelegate call]; \
+if ([_nativeScrollDelegate respondsToSelector:_cmd]) { \
+  [_nativeScrollDelegate call]; \
 }
 
 RCT_SCROLL_EVENT_HANDLER(scrollViewDidEndScrollingAnimation, RCTScrollEventTypeEndDeceleration)
@@ -564,7 +591,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
       (_scrollEventThrottle > 0 && _scrollEventThrottle < (now - _lastScrollDispatchTime))) {
 
     // Calculate changed frames
-    NSArray *childFrames = [self calculateChildFramesData];
+    NSArray<NSDictionary *> *childFrames = [self calculateChildFramesData];
 
     // Dispatch event
     [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeMove
@@ -579,9 +606,9 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
   RCT_FORWARD_SCROLL_EVENT(scrollViewDidScroll:scrollView);
 }
 
-- (NSArray *)calculateChildFramesData
+- (NSArray<NSDictionary *> *)calculateChildFramesData
 {
-    NSMutableArray *updatedChildFrames = [NSMutableArray new];
+    NSMutableArray<NSDictionary *> *updatedChildFrames = [NSMutableArray new];
     [[_contentView reactSubviews] enumerateObjectsUsingBlock:
      ^(UIView *subview, NSUInteger idx, __unused BOOL *stop) {
 
@@ -696,8 +723,8 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
 {
-  if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) {
-    return [_nativeMainScrollDelegate scrollViewShouldScrollToTop:scrollView];
+  if ([_nativeScrollDelegate respondsToSelector:_cmd]) {
+    return [_nativeScrollDelegate scrollViewShouldScrollToTop:scrollView];
   }
   return YES;
 }
@@ -816,6 +843,7 @@ RCT_SET_AND_PRESERVE_OFFSET(setBouncesZoom, BOOL)
 RCT_SET_AND_PRESERVE_OFFSET(setCanCancelContentTouches, BOOL)
 RCT_SET_AND_PRESERVE_OFFSET(setDecelerationRate, CGFloat)
 RCT_SET_AND_PRESERVE_OFFSET(setDirectionalLockEnabled, BOOL)
+RCT_SET_AND_PRESERVE_OFFSET(setIndicatorStyle, UIScrollViewIndicatorStyle)
 RCT_SET_AND_PRESERVE_OFFSET(setKeyboardDismissMode, UIScrollViewKeyboardDismissMode)
 RCT_SET_AND_PRESERVE_OFFSET(setMaximumZoomScale, CGFloat)
 RCT_SET_AND_PRESERVE_OFFSET(setMinimumZoomScale, CGFloat)
@@ -842,6 +870,34 @@ RCT_SET_AND_PRESERVE_OFFSET(setScrollIndicatorInsets, UIEdgeInsets);
 - (id)valueForUndefinedKey:(NSString *)key
 {
   return [_scrollView valueForKey:key];
+}
+
+- (void)setOnRefreshStart:(RCTDirectEventBlock)onRefreshStart
+{
+  if (!onRefreshStart) {
+    _onRefreshStart = nil;
+    _scrollView.refreshControl = nil;
+    return;
+  }
+  _onRefreshStart = [onRefreshStart copy];
+
+  if (!_scrollView.refreshControl) {
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refreshControlValueChanged) forControlEvents:UIControlEventValueChanged];
+    _scrollView.refreshControl = refreshControl;
+  }
+}
+
+- (void)refreshControlValueChanged
+{
+  if (self.onRefreshStart) {
+    self.onRefreshStart(nil);
+  }
+}
+
+- (void)endRefreshing
+{
+  [_scrollView.refreshControl endRefreshing];
 }
 
 @end

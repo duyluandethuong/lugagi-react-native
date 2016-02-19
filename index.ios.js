@@ -109,8 +109,9 @@ var LugagiApp = React.createClass({
             initialRoute={{
               title: 'Trang chủ',
               component: LugagiHome, 
+              translucent: true
             }}
-            translucent="true"/>
+          />
         </TabBarIOS.Item>
 
         <TabBarIOS.Item
@@ -126,8 +127,9 @@ var LugagiApp = React.createClass({
             initialRoute={{
               title: 'Gợi ý',
               component: SuggestionSelection,
+              translucent: true
             }}
-            translucent="true"/>
+          />
         </TabBarIOS.Item>
 
         <TabBarIOS.Item
@@ -144,8 +146,9 @@ var LugagiApp = React.createClass({
             initialRoute={{
               title: 'Thêm món mới',
               component: AddNewFood,
+              translucent: true
             }}
-            translucent="true"/>
+          />
         </TabBarIOS.Item>
 
         <TabBarIOS.Item 
@@ -161,8 +164,9 @@ var LugagiApp = React.createClass({
               title: 'Tìm kiếm',
               component: SearchPage,
               rightButtonTitle: "Test",
+              translucent: true
             }}
-            translucent="true"/>
+          />
         </TabBarIOS.Item>
 
         <TabBarIOS.Item 
@@ -177,9 +181,10 @@ var LugagiApp = React.createClass({
             tintColor='#FF5252'
             initialRoute={{
               title: 'Tùy chọn',
-              component: More
+              component: More,
+              translucent: true
             }}
-            translucent="true"/>
+            />
 
         </TabBarIOS.Item>
 

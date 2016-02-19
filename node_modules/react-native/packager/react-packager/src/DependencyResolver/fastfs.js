@@ -1,12 +1,22 @@
+/**
+ * Copyright (c) 2015-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 'use strict';
 
-const Activity = require('../Activity');
 const Promise = require('promise');
 const {EventEmitter} = require('events');
 
-const _ = require('underscore');
-const fs = require('fs');
+const fs = require('graceful-fs');
 const path = require('path');
+
+// workaround for https://github.com/isaacs/node-graceful-fs/issues/56
+// fs.close is patched, whereas graceful-fs.close is not.
+const fsClose = require('fs').close;
 
 const readFile = Promise.denodeify(fs.readFile);
 const stat = Promise.denodeify(fs.stat);
@@ -16,7 +26,7 @@ const hasOwn = Object.prototype.hasOwnProperty;
 const NOT_FOUND_IN_ROOTS = 'NotFoundInRootsError';
 
 class Fastfs extends EventEmitter {
-  constructor(name, roots, fileWatcher, {ignore, crawling}) {
+  constructor(name, roots, fileWatcher, {ignore, crawling, activity}) {
     super();
     this._name = name;
     this._fileWatcher = fileWatcher;
@@ -24,6 +34,7 @@ class Fastfs extends EventEmitter {
     this._roots = roots.map(root => new File(root, { isDir: true }));
     this._fastPaths = Object.create(null);
     this._crawling = crawling;
+    this._activity = activity;
   }
 
   build() {
@@ -32,7 +43,11 @@ class Fastfs extends EventEmitter {
     );
 
     return this._crawling.then(files => {
-      const fastfsActivity = Activity.startEvent('Building in-memory fs for ' + this._name);
+      let fastfsActivity;
+      const activity = this._activity;
+      if (activity) {
+        fastfsActivity = activity.startEvent('Building in-memory fs for ' + this._name);
+      }
       files.forEach(filePath => {
         if (filePath.match(rootsPattern)) {
           const newFile = new File(filePath, { isDir: false });
@@ -49,7 +64,9 @@ class Fastfs extends EventEmitter {
           }
         }
       });
-      Activity.endEvent(fastfsActivity);
+      if (activity) {
+        activity.endEvent(fastfsActivity);
+      }
       this._fileWatcher.on('all', this._processFileChange.bind(this));
     });
   }
@@ -62,27 +79,23 @@ class Fastfs extends EventEmitter {
   }
 
   getAllFiles() {
-    return _.chain(this._roots)
-      .map(root => root.getFiles())
-      .flatten()
-      .value();
+    // one-level-deep flatten of files
+    return [].concat(...this._roots.map(root => root.getFiles()));
   }
 
-  findFilesByExt(ext, { ignore }) {
+  findFilesByExt(ext, { ignore } = {}) {
+    return this.findFilesByExts([ext], {ignore});
+  }
+
+  findFilesByExts(exts, { ignore } = {}) {
     return this.getAllFiles()
-      .filter(
-        file => file.ext() === ext && (!ignore || !ignore(file.path))
-      )
+      .filter(file => (
+        exts.indexOf(file.ext()) !== -1 && (!ignore || !ignore(file.path))
+      ))
       .map(file => file.path);
   }
 
-  findFilesByExts(exts) {
-    return this.getAllFiles()
-      .filter(file => exts.indexOf(file.ext()) !== -1)
-      .map(file => file.path);
-  }
-
-  findFilesByName(name, { ignore }) {
+  findFilesByName(name, { ignore } = {}) {
     return this.getAllFiles()
       .filter(
         file => path.basename(file.path) === name &&
@@ -91,12 +104,26 @@ class Fastfs extends EventEmitter {
       .map(file => file.path);
   }
 
+  matchFilesByPattern(pattern) {
+    return this.getAllFiles()
+      .filter(file => file.path.match(pattern))
+      .map(file => file.path);
+  }
+
   readFile(filePath) {
     const file = this._getFile(filePath);
     if (!file) {
-      throw new Error(`Unable to find file with path: ${file}`);
+      throw new Error(`Unable to find file with path: ${filePath}`);
     }
     return file.read();
+  }
+
+  readWhile(filePath, predicate) {
+    const file = this._getFile(filePath);
+    if (!file) {
+      throw new Error(`Unable to find file with path: ${filePath}`);
+    }
+    return file.readWhile(predicate);
   }
 
   closest(filePath, name) {
@@ -139,7 +166,7 @@ class Fastfs extends EventEmitter {
   }
 
   matches(dir, pattern) {
-    let dirFile = this._getFile(dir);
+    const dirFile = this._getFile(dir);
     if (!dirFile.isDir) {
       throw new Error(`Expected file ${dirFile.path} to be a directory`);
     }
@@ -151,7 +178,7 @@ class Fastfs extends EventEmitter {
 
   _getRoot(filePath) {
     for (let i = 0; i < this._roots.length; i++) {
-      let possibleRoot = this._roots[i];
+      const possibleRoot = this._roots[i];
       if (isDescendant(possibleRoot.path, filePath)) {
         return possibleRoot;
       }
@@ -226,6 +253,15 @@ class File {
     return this._read;
   }
 
+  readWhile(predicate) {
+    return readWhile(this.path, predicate).then(({result, completed}) => {
+      if (completed && !this._read) {
+        this._read = Promise.resolve(result);
+      }
+      return result;
+    });
+  }
+
   stat() {
     if (!this._stat) {
       this._stat = stat(this.path);
@@ -261,7 +297,7 @@ class File {
     /*eslint consistent-this:0*/
     let file = this;
     for (let i = 0; i < parts.length; i++) {
-      let fileName = parts[i];
+      const fileName = parts[i];
       if (!fileName) {
         continue;
       }
@@ -278,13 +314,16 @@ class File {
   }
 
   getFiles() {
-    return _.flatten(_.values(this.children).map(file => {
+    let files = [];
+    Object.keys(this.children).forEach(key => {
+      const file = this.children[key];
       if (file.isDir) {
-        return file.getFiles();
+        files = files.concat(file.getFiles());
       } else {
-        return file;
+        files.push(file);
       }
-    }));
+    });
+    return files;
   }
 
   ext() {
@@ -298,6 +337,58 @@ class File {
 
     delete this.parent.children[path.basename(this.path)];
   }
+}
+
+function readWhile(filePath, predicate) {
+  return new Promise((resolve, reject) => {
+    fs.open(filePath, 'r', (openError, fd) => {
+      if (openError) {
+        reject(openError);
+        return;
+      }
+
+      read(
+        fd,
+        /*global Buffer: true*/
+        new Buffer(512),
+        makeReadCallback(fd, predicate, (readError, result, completed) => {
+          if (readError) {
+            reject(readError);
+          } else {
+            resolve({result, completed});
+          }
+        })
+      );
+    });
+  });
+}
+
+function read(fd, buffer, callback) {
+  fs.read(fd, buffer, 0, buffer.length, -1, callback);
+}
+
+function close(fd, error, result, complete, callback) {
+  fsClose(fd, closeError => callback(error || closeError, result, complete));
+}
+
+function makeReadCallback(fd, predicate, callback) {
+  let result = '';
+  let index = 0;
+  return function readCallback(error, bytesRead, buffer) {
+    if (error) {
+      close(fd, error, undefined, false, callback);
+      return;
+    }
+
+    const completed = bytesRead === 0;
+    const chunk = completed ? '' : buffer.toString('utf8', 0, bytesRead);
+    result += chunk;
+    if (completed || !predicate(chunk, index++, result)) {
+      close(fd, null, result, completed, callback);
+    } else {
+      read(fd, buffer, readCallback);
+    }
+  };
 }
 
 function isDescendant(root, child) {

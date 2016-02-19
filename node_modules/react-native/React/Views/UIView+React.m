@@ -51,7 +51,7 @@
   [subview removeFromSuperview];
 }
 
-- (NSArray *)reactSubviews
+- (NSArray<UIView *> *)reactSubviews
 {
   return self.subviews;
 }
@@ -82,9 +82,9 @@
   self.bounds = bounds;
 }
 
-- (void)reactSetInheritedBackgroundColor:(UIColor *)inheritedBackgroundColor
+- (void)reactSetInheritedBackgroundColor:(__unused UIColor *)inheritedBackgroundColor
 {
-  self.backgroundColor = inheritedBackgroundColor;
+  // Does nothing by default
 }
 
 - (UIViewController *)reactViewController

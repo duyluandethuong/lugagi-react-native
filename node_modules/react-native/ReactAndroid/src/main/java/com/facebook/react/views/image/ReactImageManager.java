@@ -11,11 +11,14 @@ package com.facebook.react.views.image;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 import android.graphics.Color;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeControllerBuilder;
-import com.facebook.react.uimanager.ReactProp;
+import com.facebook.react.common.MapBuilder;
+import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewProps;
@@ -29,7 +32,7 @@ public class ReactImageManager extends SimpleViewManager<ReactImageView> {
     return REACT_CLASS;
   }
 
-  private final @Nullable AbstractDraweeControllerBuilder mDraweeControllerBuilder;
+  private @Nullable AbstractDraweeControllerBuilder mDraweeControllerBuilder;
   private final @Nullable Object mCallerContext;
 
   public ReactImageManager(
@@ -40,17 +43,28 @@ public class ReactImageManager extends SimpleViewManager<ReactImageView> {
   }
 
   public ReactImageManager() {
+    // Lazily initialize as FrescoModule have not been initialized yet
     mDraweeControllerBuilder = null;
     mCallerContext = null;
+  }
+
+  public AbstractDraweeControllerBuilder getDraweeControllerBuilder() {
+    if (mDraweeControllerBuilder == null) {
+      mDraweeControllerBuilder = Fresco.newDraweeControllerBuilder();
+    }
+    return mDraweeControllerBuilder;
+  }
+
+  public Object getCallerContext() {
+    return mCallerContext;
   }
 
   @Override
   public ReactImageView createViewInstance(ThemedReactContext context) {
     return new ReactImageView(
         context,
-        mDraweeControllerBuilder == null ?
-            Fresco.newDraweeControllerBuilder() : mDraweeControllerBuilder,
-        mCallerContext);
+        getDraweeControllerBuilder(),
+        getCallerContext());
   }
 
   // In JS this is Image.props.source.uri
@@ -59,12 +73,27 @@ public class ReactImageManager extends SimpleViewManager<ReactImageView> {
     view.setSource(source);
   }
 
+  // In JS this is Image.props.loadingIndicatorSource.uri
+  @ReactProp(name = "loadingIndicatorSrc")
+  public void setLoadingIndicatorSource(ReactImageView view, @Nullable String source) {
+    view.setLoadingIndicatorSource(source);
+  }
+
   @ReactProp(name = "borderColor", customType = "Color")
   public void setBorderColor(ReactImageView view, @Nullable Integer borderColor) {
     if (borderColor == null) {
       view.setBorderColor(Color.TRANSPARENT);
     } else {
       view.setBorderColor(borderColor);
+    }
+  }
+
+  @ReactProp(name = "overlayColor")
+  public void setOverlayColor(ReactImageView view, @Nullable Integer overlayColor) {
+    if (overlayColor == null) {
+      view.setOverlayColor(Color.TRANSPARENT);
+    } else {
+      view.setOverlayColor(overlayColor);
     }
   }
 
@@ -90,6 +119,33 @@ public class ReactImageManager extends SimpleViewManager<ReactImageView> {
     } else {
       view.setColorFilter(tintColor);
     }
+  }
+
+  @ReactProp(name = "progressiveRenderingEnabled")
+  public void setProgressiveRenderingEnabled(ReactImageView view, boolean enabled) {
+    view.setProgressiveRenderingEnabled(enabled);
+  }
+
+  @ReactProp(name = "fadeDuration")
+  public void setFadeDuration(ReactImageView view, int durationMs) {
+    view.setFadeDuration(durationMs);
+  }
+
+  @ReactProp(name = "shouldNotifyLoadEvents")
+  public void setLoadHandlersRegistered(ReactImageView view, boolean shouldNotifyLoadEvents) {
+    view.setShouldNotifyLoadEvents(shouldNotifyLoadEvents);
+  }
+
+  @Override
+  public @Nullable Map getExportedCustomDirectEventTypeConstants() {
+    return MapBuilder.of(
+      ImageLoadEvent.eventNameForType(ImageLoadEvent.ON_LOAD_START),
+        MapBuilder.of("registrationName", "onLoadStart"),
+      ImageLoadEvent.eventNameForType(ImageLoadEvent.ON_LOAD),
+        MapBuilder.of("registrationName", "onLoad"),
+      ImageLoadEvent.eventNameForType(ImageLoadEvent.ON_LOAD_END),
+        MapBuilder.of("registrationName", "onLoadEnd")
+    );
   }
 
   @Override
