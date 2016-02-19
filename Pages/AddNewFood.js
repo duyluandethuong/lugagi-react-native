@@ -3,6 +3,7 @@
 var React = require('react-native');
 var SearchResults = require('./SearchResults');
 var FoodDetail = require('./FoodDetail.js');
+var LoginPage = require('./LoginPage.js');
 
 var lugagistyle = require('../Styles/lugagistyle.js');
 var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
@@ -16,15 +17,19 @@ var {
   TouchableOpacity,
   ActivityIndicatorIOS,
   AlertIOS,
+  Alert,
   AsyncStorage,
   Image,
   Component,
   ListView,
   ScrollView,
+  PickerIOS,
   NativeModules: {
     UIImagePickerManager
   }
 } = React;
+
+var PickerItemIOS = PickerIOS.Item;
 
 //Create class for the page
 var AddNewFood =  React.createClass({
@@ -36,14 +41,43 @@ var AddNewFood =  React.createClass({
 		  	isLoading: false,
 		  	newFoodName: '',
 		  	newFoodDescription: '',
-			newFoodType: '',
+			newFoodType: 0,
+			newFoodTypeText: '',
 			foodImageSource: '',
 			showFoodImage: false,
+			foodTypeArray: [],
+			showFoodTypeSelector: false,
+			showHideFoodTypePickerButtonText: "Chọn cách chế biến",
 		};
 	},
 
 	componentWillMount: function() {
 		this.getCurrentUser();
+
+		//Get the food type from server
+		var getFoodTypeURL = "http://lugagi.com/script/food/getFoodType.php";
+		fetch(getFoodTypeURL, {method: "GET"})
+        .then((response) => response.json())
+        .then((responseData) => {
+        	var allFoodTypeObject = [];
+
+        	for (var i in responseData.FoodTypes) {
+        		var foodTypeID = responseData.FoodTypes[i].LoaiMonAnID;
+        		var foodTypeName = responseData.FoodTypes[i].LoaiMonAnDescription;
+        		var foodTypeObject = {name: foodTypeName, value: foodTypeID};
+        		allFoodTypeObject.push(foodTypeObject);
+        	}
+
+        	this.setState({ 
+    			foodTypeArray: allFoodTypeObject 
+    		});
+        })
+        .done(() => {
+        });
+	},
+
+	componentDidMount: function() {
+
 	},
 
 	getCurrentUser: function() {
@@ -110,48 +144,119 @@ var AddNewFood =  React.createClass({
 
 	//Code to handle the find button
 	onCreateNewFoodPressed: function() {
-		var searchString = this.state.searchString;
-		var searchURL = "http://lugagi.com/script/food/themmonan.php";
-		var fetchBody = "";
 
-		fetchBody = fetchBody + "CurrentUserID=" + this.state.currentUserID;
-		fetchBody = fetchBody + "&TenMon=" + this.state.newFoodName;
-		fetchBody = fetchBody + "&MoTa=" + this.state.newFoodDescription;
-		fetchBody = fetchBody + "&LoaiMonAn=" + "2";
-		fetchBody = fetchBody + "&foodImageString=" + encodeURIComponent(this.state.foodImageSource.uri); 
-		//Must have encodeURIComponent here for the base 64 string to works
-		//https://github.com/marcshilling/react-native-image-picker
+		//First do the validation
+		var bValidationPass = false;
+		var missingInfo = "Bạn chưa nhập các thông tin sau:";
 
-		//Display the loading icon
-		this.setState({ isLoading: true});
+		//Initially check for the login user
+		if (this.state.currentUserID) {
+			if (this.state.newFoodName == "") {
+				bValidationPass = false;
+				missingInfo = missingInfo + "\nTên món ăn";
+			}
+			else {
+				bValidationPass = true;
+			}
 
-		//console.log(this.state.foodImageSource.uri);
-		fetch(searchURL, {method: "POST", body: fetchBody})
-        .then((response) => response.json())
-        .then((responseData) => {
-        		console.log(responseData);
-        		this.setState({ isLoading: false });
+			if (this.state.newFoodType <= 0) {
+				bValidationPass = false;
+				missingInfo = missingInfo + "\nCách chế biến";
+			}
+			else {
+				bValidationPass = true;
+			}
+			
+			//If all validation passed, then we can continue to add the food
+			if (bValidationPass == true) {
+				var searchString = this.state.searchString;
+				var searchURL = "http://lugagi.com/script/food/themmonan.php";
+				var fetchBody = "";
 
-        		var submitStatus = responseData.InsertNewFoodResult[0].Status;
+				fetchBody = fetchBody + "CurrentUserID=" + this.state.currentUserID;
+				fetchBody = fetchBody + "&TenMon=" + this.state.newFoodName;
+				fetchBody = fetchBody + "&MoTa=" + this.state.newFoodDescription;
+				fetchBody = fetchBody + "&LoaiMonAn=" + this.state.newFoodType;
+				fetchBody = fetchBody + "&foodImageString=" + encodeURIComponent(this.state.foodImageSource.uri); 
+				//Must have encodeURIComponent here for the base 64 string to works
+				//https://github.com/marcshilling/react-native-image-picker
 
-        		if (submitStatus == "success") {
-				    this.props.navigator.push({
-					  title: 'Món ăn',
-					  component: FoodDetail,
-					  passProps: {foodID: responseData.InsertNewFoodResult[0].MonAnID}
-					});
-				}
-				else {
-					AlertIOS.alert(
-			            'Không thể tạo món mới',
-			            responseData.InsertNewFoodResult[0].ErrorMessage
-		            );
-				}
-        })
-        .done(() => {
-        	//Hide the loading icon
-        	
-        });
+				//Display the loading icon
+				this.setState({ isLoading: true});
+
+				//console.log(this.state.foodImageSource.uri);
+				fetch(searchURL, {method: "POST", body: fetchBody})
+		        .then((response) => response.json())
+		        .then((responseData) => {
+		        		console.log(responseData);
+		        		this.setState({ isLoading: false });
+
+		        		var submitStatus = responseData.InsertNewFoodResult[0].Status;
+
+		        		if (submitStatus == "success") {
+						    this.props.navigator.push({
+							  title: 'Món ăn',
+							  component: FoodDetail,
+							  passProps: {foodID: responseData.InsertNewFoodResult[0].MonAnID}
+							});
+						}
+						else {
+							AlertIOS.alert(
+					            'Không thể tạo món mới',
+					            responseData.InsertNewFoodResult[0].ErrorMessage
+				            );
+						}
+		        })
+		        .done(() => {
+		        	//Hide the loading icon
+		        	
+		        });
+	    	}
+	    	else {
+	    		AlertIOS.alert('Thiếu thông tin', missingInfo);
+	    	}
+    	}
+    	//If the user has not logged in yet, direct him to the login page
+    	AlertIOS.alert(
+		  'Chưa đăng nhập',
+		  'Bạn cần phải đăng nhập trước khi tạo món mới',
+		  [
+		    {text: 'Hủy', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+		    {text: 'Đăng nhập', onPress: () => this.props.navigator.push({
+												  title: 'Đăng nhập',
+												  component: LoginPage,
+												})
+			},
+		  ]
+		);
+	},
+
+	showHideFoodTypePicker: function () {
+		if (this.state.showFoodTypeSelector == true) {
+			this.setState({showFoodTypeSelector: false, showHideFoodTypePickerButtonText: "Đổi cách chế biến"});
+		}
+		else {
+			this.setState({showFoodTypeSelector: true, showHideFoodTypePickerButtonText: "Chấp nhận"});
+		}
+	},
+
+	onFoodTypePickerChange: function(selectedFoodType) {
+		console.log(selectedFoodType);
+
+		for (var i=0; i < this.state.foodTypeArray.length; i++) {
+			if (this.state.foodTypeArray[i].value == selectedFoodType) {
+				var selectedFoodTypeText = this.state.foodTypeArray[i].name;
+				break; //If match, then end the loop immediately
+			}
+			else {
+				var selectedFoodTypeText = "Không xác định";
+			}
+		}
+
+		this.setState({
+			newFoodType: selectedFoodType,
+			newFoodTypeText: selectedFoodTypeText,
+		});
 	},
 
 	//Render the page
@@ -166,6 +271,20 @@ var AddNewFood =  React.createClass({
 			  </View>) :
 			( <View/>);
 
+		var foodTypePicker = this.state.showFoodTypeSelector ?
+			(	<PickerIOS
+					selectedValue={this.state.newFoodType}
+					onValueChange={(selectedFoodType) => this.onFoodTypePickerChange(selectedFoodType)}>
+					{Object.keys(this.state.foodTypeArray).map((selectedFoodType) => (
+						<PickerItemIOS
+							key={this.state.foodTypeArray[selectedFoodType].value}
+							value={this.state.foodTypeArray[selectedFoodType].value}
+							label={this.state.foodTypeArray[selectedFoodType].name}
+						/>
+					))}
+		        </PickerIOS>):
+			(<View/>);
+
 		if (this.state.showFoodImage == true) {
 			var foodImage = (<Image source={this.state.foodImageSource} style={styles.thumb} />);
 		}
@@ -174,38 +293,47 @@ var AddNewFood =  React.createClass({
 		}
 
 		return (
-	      	<ScrollView style={styles.appBodyContainer}>
+	      	<ScrollView style={lugagistyle.appBodyContainer}>
 
 		        <View style={styles.searchView}>
+		        	<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Tên món ăn</Text>
 				  	<TextInput
 					    style={lugagistyle.textInput}
 					    value={this.state.searchString}
 					    onChange={this.onFoodNameChange}
-					    placeholder='Tên món ăn'/>
+					    placeholder='Ví dụ: Cá lóc kho tộ'/>
 
+					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Mô tả</Text>
 					<TextInput
 					    style={lugagistyle.textInput}
 					    value={this.state.searchString}
 					    onChange={this.onFoodDescriptionChange}
-					    placeholder='Mô tả'/>
-					
+					    placeholder='Ví dụ: Cá lóc kho tộ là món ngon của miền Nam, rất đơn giản nhưng rất đậm đà'/>
+
+					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Cách chế biến: {this.state.newFoodTypeText}</Text>
 					<TouchableOpacity
-						style={styles.button}
-					    underlayColor='#99d9f4'
+					    onPress={this.showHideFoodTypePicker}>
+					  <Text style={lugagistyle.buttonTextAccent}>{this.state.showHideFoodTypePickerButtonText}</Text>
+					</TouchableOpacity>
+					{foodTypePicker}
+
+					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Hình ảnh</Text>
+					<TouchableOpacity
 					    onPress={this.onSelectImageClicked}>
-					  <Text style={lugagistyle.buttonTextAccent}>Chọn ảnh cho món ăn</Text>
+					  <Text style={lugagistyle.buttonTextAccent}>Bấm để chọn ảnh cho món ăn</Text>
 					</TouchableOpacity>
 
 					{foodImage}
 
 					<TouchableOpacity 
-						style={styles.button}
-					    underlayColor='#99d9f4'
+						style={[lugagistyle.buttonAccentOutline, lugagistyle.marginDeep]}
+						underlayColor="#f44336"
 					    onPress={this.onCreateNewFoodPressed}>
-					  <Text style={lugagistyle.buttonTextAccent}>Tạo mới</Text>
+					  <Text style={lugagistyle.buttonTextAccent}>TẠO MỚI</Text>
 					</TouchableOpacity>
 
 					{spinner}
+
 				</View>
 
 	      	</ScrollView>
@@ -220,8 +348,7 @@ var styles = StyleSheet.create({
 		flex: 1,
 	},
   	searchView: {
-		alignItems: 'center',
-		alignSelf: 'stretch'
+		
 	},
 	thumb: {
 		width: 300,

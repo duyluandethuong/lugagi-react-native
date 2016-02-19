@@ -2,6 +2,7 @@
  
 var React = require('react-native');
 var LugagiHome = require('./LugagiHome.js');
+var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
   StyleSheet,
@@ -14,7 +15,8 @@ var {
   Component,
   ListView,
   AlertIOS,
-  AsyncStorage
+  AsyncStorage,
+  TouchableOpacity
 } = React;
 
 //Styling
@@ -207,29 +209,29 @@ var LoginPage = React.createClass({
 			        <View style={styles.searchView}>
 			        	<TextInput
 			        		ref="usernameTextField"
-						    style={styles.searchInput}
+						    style={lugagistyle.textInput}
 						    onChange={this.onUsernameChange.bind(this)}
 						    placeholder='Tên đăng nhập'/>
 
 					  	<TextInput
 					  		ref="passwordTextField"
-						    style={styles.searchInput}
+						    style={lugagistyle.textInput}
 						    secureTextEntry="true"
 						    onChange={this.onPasswordChange.bind(this)}
 						    placeholder='Mật khẩu'/>
 					
-						<TouchableHighlight 
-							style={styles.button}
+						<TouchableOpacity 
+							style={lugagistyle.buttonTextAccent}
 						    underlayColor='#99d9f4'
 						    onPress={this.loginButtonPress.bind(this)}>
-						  <Text style={styles.buttonText}>Đăng nhập</Text>
-						</TouchableHighlight>
+						  <Text style={lugagistyle.buttonTextAccent}>Đăng nhập</Text>
+						</TouchableOpacity>
 
-						<TouchableHighlight 
-							style={styles.button}
+						<TouchableOpacity 
+							style={lugagistyle.buttonTextAccent}
 						    underlayColor='#99d9f4'>
-						  <Text style={styles.buttonText}>Chưa có tài khoản? Đăng kí ngay!</Text>
-						</TouchableHighlight>
+						  <Text style={lugagistyle.buttonTextAccent}>Chưa có tài khoản? Đăng kí ngay!</Text>
+						</TouchableOpacity>
 
 						{spinner}
 					</View>
