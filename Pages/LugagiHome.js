@@ -81,12 +81,15 @@ var LugagiHome = React.createClass({
 			currentUserID: null,
 			currentUsername: null,
 			currentUserProfileImageURL: null,
-		  	dataSource: new ListView.DataSource({
+		  	editorPickedSource: new ListView.DataSource({
 		    	rowHasChanged: (row1, row2) => row1 !== row2,
 		  	}),
 		  	latestFoodSource: new ListView.DataSource({
 		    	rowHasChanged: (row1, row2) => row1 !== row2,
 		  	}),
+            userInterestedFoodSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2,
+            }),
 		  	loaded: false,
 		  	randomFoodID: '',
 		  	randomFoodName: '',
@@ -101,6 +104,7 @@ var LugagiHome = React.createClass({
 		this.getCurrentUser("currentUserID");
 		this.getCurrentUser("currentUsername");
 		this.getCurrentUser("currentUserProfileImageURL");
+		this.getUserInterestedFood();
 	},
 
 	//Async function to get current user
@@ -160,7 +164,7 @@ var LugagiHome = React.createClass({
         .then((response) => response.json())
         .then((responseData) => {
         	this.setState({
-		      dataSource: this.state.dataSource.cloneWithRows(responseData.EditorPickContents),
+		      editorPickedSource: this.state.editorPickedSource.cloneWithRows(responseData.EditorPickContents),
 		      loaded: true,
 		    });
         })
@@ -179,12 +183,25 @@ var LugagiHome = React.createClass({
         .done();
 	},
 
+	getUserInterestedFood: function(){
+		var fetchParam = "?UserID=" + this.state.currentUserID;
+		fetch("http://lugagi.com/script/smartPhoneAPI/landing/loadUserInterestedFood.php" + fetchParam, {method: "GET"})
+        .then((response) => response.json())
+        .then((responseData) => {
+        	this.setState({
+		      userInterestedFoodSource: this.state.userInterestedFoodSource.cloneWithRows(responseData.InterestedFoods),
+		      loaded: true,
+		    });
+        })
+        .done();
+	},
+
 	renderContentList: function(content) {
 		var fullImageURL = "http://lugagi.com/script/timthumb.php?src=/" + content.ContentImageURL + "&w=300&h=200";
 		return (
 			<TouchableHighlight underlayColor='rgba(0,0,0,0)' 
 				onPress={() => this.contentItemPresses(content.ContentID, content.ContentType)}>
-				<View style={styles.listViewItemContainer}>
+                <View style={styles.listViewItemContainer}>
 					<Image
 					  source={{uri: fullImageURL}}
 					  style={styles.thumb}/>
@@ -238,7 +255,7 @@ var LugagiHome = React.createClass({
 
 				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Chọn bởi Lugagi</Text>
 				<ListView
-				    dataSource={this.state.dataSource}
+				    dataSource={this.state.editorPickedSource}
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
 				    horizontal={true}/>
@@ -253,7 +270,7 @@ var LugagiHome = React.createClass({
 
 				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Có thể bạn thích</Text>
 				<ListView
-				    dataSource={this.state.dataSource}
+				    dataSource={this.state.userInterestedFoodSource}
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
 				    horizontal={true}/>
