@@ -210,20 +210,20 @@ var LoginPage = React.createClass({
 			        	<TextInput
 			        		ref="usernameTextField"
 						    style={lugagistyle.textInput}
-						    onChange={this.onUsernameChange.bind(this)}
+						    onChange={this.onUsernameChange}
 						    placeholder='Tên đăng nhập'/>
 
 					  	<TextInput
 					  		ref="passwordTextField"
 						    style={lugagistyle.textInput}
-						    secureTextEntry="true"
-						    onChange={this.onPasswordChange.bind(this)}
+						    secureTextEntry={true}
+						    onChange={this.onPasswordChange}
 						    placeholder='Mật khẩu'/>
 					
 						<TouchableOpacity 
 							style={lugagistyle.buttonTextAccent}
 						    underlayColor='#99d9f4'
-						    onPress={this.loginButtonPress.bind(this)}>
+						    onPress={this.loginButtonPress}>
 						  <Text style={lugagistyle.buttonTextAccent}>Đăng nhập</Text>
 						</TouchableOpacity>
 

@@ -159,13 +159,13 @@ var More = React.createClass({
   },
 
   render: function() {
-
+    var test = ["xxx", "yyy", "zzz"];
     var ScrollViewList = [];
     
     //Render login logout button according to the state of the current user
     if (this.state.currentUserID) {
       var CurrentUserMenuListItem = (
-        <TouchableHighlight underlayColor='#99d9f4'>
+        <TouchableHighlight underlayColor='#99d9f4' key={test[0]}>
           <View style={styles.menuList}>
             <Image source={{uri: this.state.currentUserProfileImageURL}}
                 style={styles.profilePic}/>
@@ -175,7 +175,7 @@ var More = React.createClass({
       );
 
       var LoginLogoutMenuListItem = (
-          <TouchableHighlight underlayColor='#99d9f4' onPress={this.logOutConfirm}>
+          <TouchableHighlight underlayColor='#99d9f4' onPress={this.logOutConfirm} key={test[1]}>
             <View style={styles.menuList}>
               <Image source={{uri: this.state.currentUserProfileImageURL}}
                   style={styles.profilePic}/>
@@ -185,7 +185,7 @@ var More = React.createClass({
       );
 
       var ListCustomMenuItem = (
-          <TouchableHighlight underlayColor='#99d9f4' onPress={this.listCustomMenu}>
+          <TouchableHighlight underlayColor='#99d9f4' onPress={this.listCustomMenu} key={test[2]}>
             <View style={styles.menuList}>
               <Image source={{uri: this.state.currentUserProfileImageURL}}
                   style={styles.profilePic}/>
@@ -201,7 +201,7 @@ var More = React.createClass({
     }
     else {
       var LoginLogoutMenuListItem = (
-          <TouchableHighlight underlayColor='#99d9f4' onPress={this.logInProcess}>
+          <TouchableHighlight underlayColor='#99d9f4' onPress={this.logInProcess} key={test[2]}>
             <View style={styles.menuList}>
               <Image source={{uri: this.state.currentUserProfileImageURL}}
                   style={styles.profilePic}/>

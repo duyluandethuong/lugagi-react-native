@@ -146,21 +146,21 @@ var IngredientSelection = React.createClass({
 		      		<TextInput
 						    style={lugagistyle.textInput}
 						    value={this.state.searchString}
-						    onChange={this.onSearchTextChanged.bind(this)}
+						    onChange={this.onSearchTextChanged}
 						    placeholder='Nhập tên món ăn hoặc bộ sưu tập'/>
 				</View>
 				<View>
 					<TouchableOpacity 
 						style={lugagistyle.buttonAccent}
 					    underlayColor='#99d9f4'
-					    onPress={this.onSearchPressed.bind(this)}>
+					    onPress={this.onSearchPressed}>
 					  <Text style={lugagistyle.buttonTextAccent}>Gợi ý</Text>
 					</TouchableOpacity>
 					{spinner}
 				</View>
 				<ListView
 			        dataSource={this.state.searchResultDataSource}
-			        renderRow={this.renderRow.bind(this)}/>
+			        renderRow={this.renderRow}/>
 	      	</ScrollView>
 	    );
   	},

@@ -201,7 +201,7 @@ var AddNewFood =  React.createClass({
 							});
 						}
 						else {
-							AlertIOS.alert(
+							Alert.alert(
 					            'Không thể tạo món mới',
 					            responseData.InsertNewFoodResult[0].ErrorMessage
 				            );
@@ -213,11 +213,11 @@ var AddNewFood =  React.createClass({
 		        });
 	    	}
 	    	else {
-	    		AlertIOS.alert('Thiếu thông tin', missingInfo);
+	    		Alert.alert('Thiếu thông tin', missingInfo);
 	    	}
     	}
     	//If the user has not logged in yet, direct him to the login page
-    	AlertIOS.alert(
+    	Alert.alert(
 		  'Chưa đăng nhập',
 		  'Bạn cần phải đăng nhập trước khi tạo món mới',
 		  [
