@@ -7,7 +7,28 @@ var {
 } = React;
 
 module.exports = StyleSheet.create({
-
+	appBodyContainer: {
+		flex: 1,
+	},
+	center: {
+		alignSelf: 'stretch',
+		justifyContent: 'center'
+	},
+	fullWidth: {
+		width: 400
+	},
+	marginNormal: {
+		marginTop: 10,
+		marginBottom: 10,
+		marginLeft: 5,
+		marginRight: 5,
+	},
+	marginDeep: {
+		marginTop: 10,
+		marginBottom: 10,
+		marginLeft: 15,
+		marginRight: 15,
+	},
 	buttonTextAccent: {
 		fontSize: 18,
 		marginTop: 10,
@@ -18,12 +39,23 @@ module.exports = StyleSheet.create({
 	buttonAccent: {
 		height: 36,
 		flex: 1,
-		borderRadius: 5,
+		alignSelf: 'stretch',
+		justifyContent: 'center'
+	},
+	buttonAccentOutline: {
+		height: 36,
+		flex: 1,
+		borderWidth: 1,
+		borderColor: '#FF5252',
+		borderRadius: 4,
 		alignSelf: 'stretch',
 		justifyContent: 'center'
 	},
 	textAccent: {
 		color: '#FF5252'
+	},
+	textAccentContrast: {
+		color: '#FFFDFF'
 	},
 	textPrimary: {
 		color: '#607D8B'
@@ -32,6 +64,12 @@ module.exports = StyleSheet.create({
 		fontSize: 20,
 		marginTop: 10,
 		marginBottom: 10,
+		marginLeft: 5,
+	},
+	sectionTitleSmall: {
+		fontSize: 16,
+		marginTop: 10,
+		marginBottom: 5,
 		marginLeft: 5,
 	},
 	textInput: {
@@ -44,7 +82,7 @@ module.exports = StyleSheet.create({
 		fontSize: 16,
 		borderWidth: 1,
 		borderColor: '#607D8B',
-		borderRadius: 2,
+		borderRadius: 4,
 	},
 	textMuted: {
 		color: '#808080'
