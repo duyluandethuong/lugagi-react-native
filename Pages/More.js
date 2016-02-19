@@ -78,7 +78,6 @@ var More = React.createClass({
     this.getCurrentUser("currentUserID");
     this.getCurrentUser("currentUsername");
     this.getCurrentUser("currentUserProfileImageURL");
-    console.log("hahaha");
   },
 
   //Async function to get current user information

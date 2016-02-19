@@ -3,6 +3,7 @@
 //var Swiper = require('react-native-swiper');
 var React = require('react-native');
 var lugagistyle = require('../Styles/lugagistyle.js');
+var EditFoodDetail = require('./EditFoodDetail.js');
 
 var {
   StyleSheet,
@@ -10,12 +11,14 @@ var {
   TextInput,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   Image,
   Component,
   AlertIOS,
   ListView,
-  ScrollView
+  ScrollView,
+  AsyncStorage
 } = React;
 
 //Styling
@@ -122,12 +125,17 @@ var FoodDetail = React.createClass({
 		    	rowHasChanged: (row1, row2) => row1 !== row2,
 		  	}),
 		  	isLoading: true,
+		  	currentUserID: 0,
+		  	currentUsername: 0,
+		  	currentUserProfileImageURL: '',
+		  	editPermission: 'N',
 		};
 	},
 
 	componentDidMount: function() {
 		this.getFoodInformation();
 		this.getFoodPosts();
+		this.getCurrentUser();
 	},
 
 	//https://blog.nraboy.com/2015/09/make-http-requests-in-ios-with-react-native/
@@ -143,6 +151,12 @@ var FoodDetail = React.createClass({
         		foodObject: responseData.FoodInfo[0],
         		foodType: responseData.FoodInfo[0].LoaiMonAn[0],
         	});
+        	//Change the edit permission
+        	if (this.state.foodObject.AddedByUserID == this.state.currentUserID) {
+        		this.setState({
+	        		editPermission: 'Y'
+	        	});
+        	}
         })
         .done(() => {
         	this.setState({
@@ -162,13 +176,40 @@ var FoodDetail = React.createClass({
         	this.setState({
 		      foodPostDataSource: this.state.foodPostDataSource.cloneWithRows(responseData.FoodPosts),
 		    });
-		    console.log(this.state.foodPostDataSource);
         })
         .done( () => {
         	this.setState({
         		isLoading: false,
         	});
         });
+	},
+
+	getCurrentUser: function() {
+		AsyncStorage.getItem("currentUserID").then((existingData) => {
+    		this.setState({ 
+    			currentUserID: existingData 
+    		});
+    	});
+    	AsyncStorage.getItem("currentUsername").then((existingData) => {
+    		this.setState({ 
+    			currentUsername: existingData 
+    		});
+    	});
+    	AsyncStorage.getItem("editPermission").then((existingData) => {
+    		this.setState({ 
+    			editPermission: existingData 
+    		});
+    	});
+	},
+
+	goToFoodDetailEdit: function() {
+		this.props.navigator.push({
+		  	title: 'Sửa thông tin',
+		  	component: EditFoodDetail,
+		  	leftButtonTitle: 'Hủy',
+           	onLeftButtonPress: () => this.props.navigator.pop(),
+		  	passProps: {foodID: this.state.foodObject.MonAnID}
+		});
 	},
 
 	render: function() {
@@ -178,6 +219,19 @@ var FoodDetail = React.createClass({
 			  size='large'/> ) :
 			( <View/>);
 		var fullImageURL = "http://lugagi.com/script/timthumb.php?src=" + this.state.foodObject.ImageURL + "&w=500&h=200";
+
+		var editFoodDetailButton ;
+		if (this.state.editPermission == "Y") {
+			editFoodDetailButton = (
+				<TouchableOpacity onPress={this.goToFoodDetailEdit}>
+				  <Text style={lugagistyle.buttonTextAccent}>Chỉnh sửa thông tin món ăn</Text>
+				</TouchableOpacity>
+			);
+		}
+		else {
+			editFoodDetailButton = (<View/>);
+		}
+
 		return (
 			<ScrollView style={styles.appBodyContainer}>
 				<View style={styles.foodInfoContainer}>
@@ -189,6 +243,7 @@ var FoodDetail = React.createClass({
 
 					<View style={styles.foodInfoText}>
 						<Text style={styles.foodName}>{this.state.foodObject.MonAnName}</Text>
+						{editFoodDetailButton}
 						<Text style={styles.foodDescription}
 								numberOfLines={3}>
 							{this.state.foodObject.MonAnDescription}
@@ -204,7 +259,6 @@ var FoodDetail = React.createClass({
 				    dataSource={this.state.foodPostDataSource}
 				    renderRow={this.renderFoodPosts}
 				    style={styles.listViewContainer}/>
-
 				{spinner}
 
 			</ScrollView>
