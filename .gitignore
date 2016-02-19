@@ -34,3 +34,7 @@ node_modules/
 npm-debug.log
 
 ios/Lugagi.xcodeproj/project.xcworkspace/xcuserdata/duyluan.xcuserdatad/UserInterfaceState.xcuserstate
+
+*.xcuserstate
+
+ios/Lugagi.xcodeproj/project.xcworkspace/xcuserdata/duyluan.xcuserdatad/UserInterfaceState.xcuserstate
