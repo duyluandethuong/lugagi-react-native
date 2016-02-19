@@ -352,14 +352,24 @@ var EditFoodDetail = React.createClass({
 	goToFoodDetail: function() {
 		var FoodDetail = require('./FoodDetail.js');
 		this.props.navigator.resetTo({
-		  title: 'Món ăn',
-		  component: FoodDetail,
-		  passProps: {foodID: this.state.foodObject.MonAnID}
+			title: 'Món ăn',
+			component: FoodDetail,
+			passProps: {foodID: this.state.foodObject.MonAnID},
+			leftButtonTitle: 'Trang chủ',
+			onLeftButtonPress: () => this.goToHome(),
 		});
 	},
 
 	cancelEditFood: function() {
 		this.props.navigator.pop();
+	},
+
+	goToHome: function() {
+		var LugagiHome = require('./LugagiHome.js');
+		this.props.navigator.resetTo({
+			title: 'Món ăn',
+			component: LugagiHome
+		});
 	},
 
 	render: function() {

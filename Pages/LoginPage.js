@@ -25,6 +25,7 @@ var styles = StyleSheet.create({
 		marginTop: 60,
 		flex: 1,
 		marginBottom: 50,
+		paddingTop: 120,
 	},
   	searchView: {
 		alignItems: 'center',
