@@ -216,12 +216,12 @@ var FoodDetail = React.createClass({
 		if (content.FoodPostTypeID == 1) {
 
 			//Render the text content first
-			var postTextContent = (<Text>{content.PostContent.TextContent}</Text>);
+			var postTextContent = (<Text key={i}>{content.PostContent.TextContent}</Text>);
 			//Then render all of the images
 			var postImages = [];
 			for (var i in content.PostContent.ImageURL) {
 				var imageURL = "http://lugagi.com/script/timthumb.php?src=/postimages/" + content.PostContent.ImageURL[i] + "&w=120&h=80";
-				var postImage = (<Image style={styles.postImages} source={{uri: imageURL}} />);
+				var postImage = (<Image style={styles.postImages} source={{uri: imageURL}} key={"image" + i}/>);
 				postImages.push(postImage);
 			}
 			var postContent = (
@@ -245,7 +245,7 @@ var FoodDetail = React.createClass({
 				//If there is an image, return an Image Object
 				if (content.PostContent.CookingSteps[i].ImageURL) {
 					var cookingStepImageURL = "http://lugagi.com/script/timthumb.php?src=/postimages/" + content.PostContent.CookingSteps[i].ImageURL + "&w=120&h=80";
-					var cookingStepImage = (<Image style={styles.postImages} source={{uri: cookingStepImageURL}} />);
+					var cookingStepImage = (<Image style={styles.postImages} source={{uri: cookingStepImageURL}} key={"image" + i}/>);
 				}
 				//If there is no image for the step, do not render anything in particular
 				else {
@@ -253,7 +253,7 @@ var FoodDetail = React.createClass({
 				}
 				
 				//Final push to construct the whole cooking step (text + image), then push to the main object
-				var cookingStepView = (<View>{cookingStepTextContent}{cookingStepImage}</View>);
+				var cookingStepView = (<View key={"step" + i}>{cookingStepTextContent}{cookingStepImage}</View>);
 				recipeCookingSteps.push(cookingStepView);
 			}
 
