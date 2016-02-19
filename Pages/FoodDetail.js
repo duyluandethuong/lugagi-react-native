@@ -3,7 +3,6 @@
 //var Swiper = require('react-native-swiper');
 var React = require('react-native');
 var lugagistyle = require('../Styles/lugagistyle.js');
-var EditFoodDetail = require('./EditFoodDetail.js');
 
 var {
   StyleSheet,
@@ -203,11 +202,10 @@ var FoodDetail = React.createClass({
 	},
 
 	goToFoodDetailEdit: function() {
+		var EditFoodDetail = require('./EditFoodDetail.js');
 		this.props.navigator.push({
 		  	title: 'Sửa thông tin',
 		  	component: EditFoodDetail,
-		  	leftButtonTitle: 'Hủy',
-           	onLeftButtonPress: () => this.props.navigator.pop(),
 		  	passProps: {foodID: this.state.foodObject.MonAnID}
 		});
 	},

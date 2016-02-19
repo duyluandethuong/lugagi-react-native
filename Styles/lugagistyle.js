@@ -36,6 +36,13 @@ module.exports = StyleSheet.create({
 		color: '#FF5252',
 		alignSelf: 'center'
 	},
+	buttonTextPrimary: {
+		fontSize: 18,
+		marginTop: 10,
+		marginBottom: 10,
+		color: '#607D8B',
+		alignSelf: 'center'
+	},
 	buttonAccent: {
 		height: 36,
 		flex: 1,
@@ -47,6 +54,15 @@ module.exports = StyleSheet.create({
 		flex: 1,
 		borderWidth: 1,
 		borderColor: '#FF5252',
+		borderRadius: 4,
+		alignSelf: 'stretch',
+		justifyContent: 'center'
+	},
+	buttonPrimaryOutline: {
+		height: 36,
+		flex: 1,
+		borderWidth: 1,
+		borderColor: '#607D8B',
 		borderRadius: 4,
 		alignSelf: 'stretch',
 		justifyContent: 'center'

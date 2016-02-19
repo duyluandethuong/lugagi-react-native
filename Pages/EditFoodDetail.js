@@ -3,7 +3,6 @@
 //var Swiper = require('react-native-swiper');
 var React = require('react-native');
 var lugagistyle = require('../Styles/lugagistyle.js');
-var FoodDetail = require('./FoodDetail.js');
 
 var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
@@ -107,9 +106,6 @@ var EditFoodDetail = React.createClass({
 			foodID: this.props.foodID,
 			foodObject: new Object(),
 			foodType: new Object(),
-		  	foodPostDataSource: new ListView.DataSource({
-		    	rowHasChanged: (row1, row2) => row1 !== row2,
-		  	}),
 		  	isLoading: true,
 		  	currentUserID: 0,
 		  	currentUsername: 0,
@@ -165,10 +161,10 @@ var EditFoodDetail = React.createClass({
         		foodObject: responseData.FoodInfo[0],
         		foodType: responseData.FoodInfo[0].LoaiMonAn[0],
         	});
-        	
+
         	//Set the image for the current food
-        	var foodImageSource = "http://lugagi.com/script/timthumb.php?src=" + this.state.foodObject.ImageURL + "&w=500&h=200";
-        	console.log(foodImageSource);
+        	var foodImageSource = "http://lugagi.com/script/timthumb.php?src=" + this.state.foodObject.ImageURL + "&w=500&h=200&q=50";
+        	
         	this.setState({
         		foodImageSource: foodImageSource,
         		showCurrentFoodImage: true
@@ -179,14 +175,6 @@ var EditFoodDetail = React.createClass({
         		isLoading: false,
         	});
         });
-	},
-
-	test: function() {
-		this.props.navigator.replace({
-		  title: 'Món ăn',
-		  component: FoodDetail,
-		  passProps: {foodID: this.state.foodObject.MonAnID}
-		});
 	},
 
 	getCurrentUser: function() {
@@ -323,24 +311,19 @@ var EditFoodDetail = React.createClass({
 			fetchBody = fetchBody + "&TenMon=" + this.state.foodObject.MonAnName;
 			fetchBody = fetchBody + "&MoTa=" + this.state.foodObject.MonAnDescription;
 			fetchBody = fetchBody + "&LoaiMonAn=" + this.state.foodType.LoaiMonAnID;
-			fetchBody = fetchBody + "&currentImageName=" + this.state.foodObject.ImageURL;
+			fetchBody = fetchBody + "&currentImageName=" + this.state.foodObject.ImageFileName;
 			fetchBody = fetchBody + "&UpdateMode=" + "update";
-			
-			//fetchBody = fetchBody + "&LoaiMonAn=" + this.state.foodType.LoaiMonAnID;
-			//fetchBody = fetchBody + "&foodImageString=" + encodeURIComponent(this.state.foodImageSource.uri); 
-			//Must have encodeURIComponent here for the base 64 string to works
-			//https://github.com/marcshilling/react-native-image-picker
 
-			console.log(fetchBody);
+			if (this.state.foodImageSource.uri) {
+				fetchBody = fetchBody + "&foodImageString=" + encodeURIComponent(this.state.foodImageSource.uri); 
+			}
 
 			//Display the loading icon
 			this.setState({ isLoading: true});
 
-			console.log(this.state.foodImageSource.uri);
 			fetch(searchURL, {method: "POST", body: fetchBody})
 	        .then((response) => response.json())
 	        .then((responseData) => {
-	        		console.log(responseData);
 	        		this.setState({ isLoading: false });
 
 	        		var submitStatus = responseData.UpdateFoodResult[0].Status;
@@ -364,6 +347,19 @@ var EditFoodDetail = React.createClass({
     	else {
     		Alert.alert('Thiếu thông tin', missingInfo);
     	}
+	},
+
+	goToFoodDetail: function() {
+		var FoodDetail = require('./FoodDetail.js');
+		this.props.navigator.resetTo({
+		  title: 'Món ăn',
+		  component: FoodDetail,
+		  passProps: {foodID: this.state.foodObject.MonAnID}
+		});
+	},
+
+	cancelEditFood: function() {
+		this.props.navigator.pop();
 	},
 
 	render: function() {
@@ -406,11 +402,6 @@ var EditFoodDetail = React.createClass({
 
 					<View style={styles.foodInfoText}>
 
-						<TouchableOpacity
-						    onPress={this.test}>
-						  <Text style={lugagistyle.buttonTextAccent}>Test</Text>
-						</TouchableOpacity>
-
 						<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Tên món ăn</Text>
 					  	<TextInput
 						    style={lugagistyle.textInput}
@@ -447,10 +438,16 @@ var EditFoodDetail = React.createClass({
 
 						<TouchableOpacity 
 							style={[lugagistyle.buttonAccentOutline, lugagistyle.marginDeep]}
-							underlayColor="#f44336"
 						    onPress={this.onUpdateFoodDetailPressed}>
 						  <Text style={lugagistyle.buttonTextAccent}>CẬP NHẬT THÔNG TIN</Text>
 						</TouchableOpacity>
+
+						<TouchableOpacity 
+							style={[lugagistyle.buttonPrimaryOutline, lugagistyle.marginDeep]}
+						    onPress={this.cancelEditFood}>
+						  <Text style={lugagistyle.buttonTextPrimary}>HỦY BỎ</Text>
+						</TouchableOpacity>
+
 					</View>
 
 				</View>
