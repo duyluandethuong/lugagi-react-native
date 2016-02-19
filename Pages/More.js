@@ -78,7 +78,6 @@ var More = React.createClass({
     this.getCurrentUser("currentUserID");
     this.getCurrentUser("currentUsername");
     this.getCurrentUser("currentUserProfileImageURL");
-    console.log("hahaha");
   },
 
   //Async function to get current user information
@@ -134,6 +133,7 @@ var More = React.createClass({
     this.deleteCurrentUser("currentUserID");
     this.deleteCurrentUser("currentUsername");
     this.deleteCurrentUser("currentUserProfileImageURL");
+    this.deleteCurrentUser("editPermission");
     
     //Clear the state to make the page re-render itself
     this.setState({
@@ -145,14 +145,14 @@ var More = React.createClass({
 
   logInProcess: function() {
     this.props.navigator.push({
-        name: 'Đăng nhập',
+        title: 'Đăng nhập',
         component: LoginPage,
     });
   },
 
   listCustomMenu: function() {
     this.props.navigator.push({
-        name: 'Thực đơn đã tạo',
+        title: 'Thực đơn đã tạo',
         component: ListCustomMenu,
         passProps: { currentUserID: this.state.currentUserID },
     });

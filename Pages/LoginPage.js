@@ -25,6 +25,7 @@ var styles = StyleSheet.create({
 		marginTop: 60,
 		flex: 1,
 		marginBottom: 50,
+		paddingTop: 120,
 	},
   	searchView: {
 		alignItems: 'center',
@@ -91,6 +92,9 @@ var LoginPage = React.createClass({
 
 	componentDidMount: function() {
 		this.getCurrentUser("currentUserID");
+		this.getCurrentUser("currentUsername");
+		this.getCurrentUser("currentUserProfileImageURL");
+		this.getCurrentUser("editPermission");
 	},
 
 	//Async function to get current user information
@@ -112,6 +116,11 @@ var LoginPage = React.createClass({
 		  	else if (keyName == "currentUserProfileImageURL") {
 		  		this.setState({
 			    	currentUserProfileImageURL: value,
+			    });
+		  	}
+		  	else if (keyName == "editPermission") {
+		  		this.setState({
+			    	editPermission: value,
 			    });
 		  	}
 
@@ -153,16 +162,19 @@ var LoginPage = React.createClass({
 			fetch(searchURL, {method: "POST", body: loginBody})
 	        .then((response) => response.json())
 	        .then((responseData) => {
+	        	console.log(responseData);
 	        	var loginStatus = responseData.LoginStatus.Status;
         		var errorMessage = responseData.LoginStatus.ErrorMessage;
         		var loginUserID = responseData.LoginStatus.CurrentUserID;
         		var loginUsername = responseData.LoginStatus.CurrentUsername;
         		var profileImageURL = responseData.LoginStatus.ProfileImageURL;
+        		var editPermission = responseData.LoginStatus.EditPermission;
 
 	        	if (loginStatus == "success") {
 	        		AsyncStorage.setItem("currentUserID", loginUserID.toString());
 	        		AsyncStorage.setItem("currentUsername", loginUsername.toString());
 	        		AsyncStorage.setItem("currentUserProfileImageURL", profileImageURL.toString());
+	        		AsyncStorage.setItem("editPermission", editPermission.toString());
 
 	        		this.props.navigator.popToTop();
 		        }

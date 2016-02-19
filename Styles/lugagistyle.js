@@ -36,6 +36,13 @@ module.exports = StyleSheet.create({
 		color: '#FF5252',
 		alignSelf: 'center'
 	},
+	buttonTextPrimary: {
+		fontSize: 18,
+		marginTop: 10,
+		marginBottom: 10,
+		color: '#607D8B',
+		alignSelf: 'center'
+	},
 	buttonAccent: {
 		height: 36,
 		flex: 1,
@@ -47,6 +54,15 @@ module.exports = StyleSheet.create({
 		flex: 1,
 		borderWidth: 1,
 		borderColor: '#FF5252',
+		borderRadius: 4,
+		alignSelf: 'stretch',
+		justifyContent: 'center'
+	},
+	buttonPrimaryOutline: {
+		height: 36,
+		flex: 1,
+		borderWidth: 1,
+		borderColor: '#607D8B',
 		borderRadius: 4,
 		alignSelf: 'stretch',
 		justifyContent: 'center'
@@ -84,6 +100,18 @@ module.exports = StyleSheet.create({
 		borderColor: '#607D8B',
 		borderRadius: 4,
 	},
+	textArea: {
+		height: 100,
+		padding: 4,
+		marginTop: 10,
+		marginBottom: 10,
+		marginLeft: 5,
+		marginRight: 5,
+		fontSize: 16,
+		borderWidth: 1,
+		borderColor: '#607D8B',
+		borderRadius: 4,
+	},
 	textMuted: {
 		color: '#808080'
 	},
@@ -91,6 +119,9 @@ module.exports = StyleSheet.create({
 		color: '#FF5252',
 		fontSize: 15,
 		fontWeight: 'bold',
+	},
+	picker: {
+		marginTop: -10,
 	}
 
 });

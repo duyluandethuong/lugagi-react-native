@@ -24,12 +24,13 @@ var {
   ListView,
   ScrollView,
   PickerIOS,
+  Picker,
   NativeModules: {
     UIImagePickerManager
   }
 } = React;
 
-var PickerItemIOS = PickerIOS.Item;
+var PickerItem = Picker.Item;
 
 //Create class for the page
 var AddNewFood =  React.createClass({
@@ -97,10 +98,6 @@ var AddNewFood =  React.createClass({
 	  this.setState({ newFoodDescription: event.nativeEvent.text });
 	},
 
-	onFoodTypeChange: function(event) {
-	  
-	},
-
 	onSelectImageClicked: function() {
 		//https://github.com/marcshilling/react-native-image-picker
 		this.setState({ isLoading: true });
@@ -119,25 +116,27 @@ var AddNewFood =  React.createClass({
 	      	}
 	    };
 
-	    UIImagePickerManager.showImagePicker(options, (didCancel, response) => {
+	    UIImagePickerManager.showImagePicker(options, (response) => {
 
-	      if (didCancel) {
-	        console.log('User cancelled image picker');
-	      }
-	      else {
-	        if (response.customButton) {
-	          console.log('User tapped custom button: ', response.customButton);
+	    	console.log('Response = ', response);
+
+			if (response.didCancel) {
+				console.log('User cancelled image picker');
+			}
+			else {
+				if (response.customButton) {
+				  console.log('User tapped custom button: ', response.customButton);
+				}
+				else {
+				  // You can display the image using either:
+				 	const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+					this.setState({
+						foodImageSource: source,
+						showFoodImage: true,
+						isLoading: false,
+					});
+		        }
 	        }
-	        else {
-	          // You can display the image using either:
-	         	const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
-				this.setState({
-					foodImageSource: source,
-					showFoodImage: true,
-					isLoading: false,
-				});
-	        }
-	      }
 	    });
 	},
 	/********** End of food content recording *****************/
@@ -272,17 +271,18 @@ var AddNewFood =  React.createClass({
 			( <View/>);
 
 		var foodTypePicker = this.state.showFoodTypeSelector ?
-			(	<PickerIOS
+			(	<Picker
+					style={lugagistyle.picker}
 					selectedValue={this.state.newFoodType}
 					onValueChange={(selectedFoodType) => this.onFoodTypePickerChange(selectedFoodType)}>
 					{Object.keys(this.state.foodTypeArray).map((selectedFoodType) => (
-						<PickerItemIOS
+						<PickerItem
 							key={this.state.foodTypeArray[selectedFoodType].value}
 							value={this.state.foodTypeArray[selectedFoodType].value}
 							label={this.state.foodTypeArray[selectedFoodType].name}
 						/>
 					))}
-		        </PickerIOS>):
+		        </Picker>):
 			(<View/>);
 
 		if (this.state.showFoodImage == true) {
@@ -305,7 +305,7 @@ var AddNewFood =  React.createClass({
 
 					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Mô tả</Text>
 					<TextInput
-					    style={lugagistyle.textInput}
+					    style={lugagistyle.textArea}
 					    value={this.state.searchString}
 					    onChange={this.onFoodDescriptionChange}
 					    placeholder='Ví dụ: Cá lóc kho tộ là món ngon của miền Nam, rất đơn giản nhưng rất đậm đà'/>
@@ -315,6 +315,7 @@ var AddNewFood =  React.createClass({
 					    onPress={this.showHideFoodTypePicker}>
 					  <Text style={lugagistyle.buttonTextAccent}>{this.state.showHideFoodTypePickerButtonText}</Text>
 					</TouchableOpacity>
+
 					{foodTypePicker}
 
 					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Hình ảnh</Text>
