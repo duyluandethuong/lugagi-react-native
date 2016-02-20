@@ -6,15 +6,30 @@ var {
   StyleSheet,
 } = React;
 
+import Dimensions from 'Dimensions';
+var screenWidth = Dimensions.get('window').width;
+
 module.exports = StyleSheet.create({
 	appBodyContainer: {
 		flex: 1,
+		paddingTop: 45,
 		paddingBottom: 20
 	},
 
-	navBar: {
-		height: 40,
+	statusBar: {
 		backgroundColor: '#FF5252',
+		opacity: 1,
+	},
+
+	navBar: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		height: 44,
+		width: screenWidth,
+		marginTop: 20,
+		backgroundColor: '#FF5252',
+		opacity: 0.95,
 	},
 
 	whiteBackground: {

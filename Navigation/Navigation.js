@@ -11,6 +11,8 @@ var AddNewFood = require('../Pages/AddNewFood.js');
 var FoodDetail = require('../Pages/FoodDetail.js');
 var lugagistyle = require('../Styles/lugagistyle.js');
 
+var NavigationBar = require('./NavigationBar.js');
+
 var {
   AppRegistry,
   StyleSheet,
@@ -20,24 +22,62 @@ var {
   Component,
   AsyncStorage,
   Navigator,
-  ActionSheetIOS
+  ActionSheetIOS,
+  StatusBar,
+  TouchableOpacity
 } = React;
 
 var Navigation = React.createClass({
-  render: function() {
 
+  render: function() {
+    
+    var lugagiNavBar = (
+        <View style={lugagistyle.navBar} >
+            <StatusBar
+               backgroundColor={"blue"}
+               barStyle={"default"}
+               translucent={false}
+               style={lugagistyle.statusBar}/>
+            <View>
+                <TouchableOpacity>
+                  <Text>Back</Text>
+                </TouchableOpacity>
+            </View>
+        </View>   
+      );
+
+    const routeMapper = {
+      LeftButton: (route, navigator, index, navState) => {
+        if (index === 0) {
+          return null
+        }
+        const previousRoute = navState.routeStack[index - 1]
+        return (
+          <TouchableOpacity
+            onPress={() => navigator.pop()}>
+            <Text style={styles.navText}>
+              {previousRoute.title}
+            </Text>
+          </TouchableOpacity>
+        )
+      },
+      RightButton: (route, navigator, index, navState) => {
+        if (route.rightElement) {
+          return route.rightElement
+        }
+      },
+      Title: (route, navigator, index, navState) => {
+        return (
+          <Text style={styles.navText}>{route.title}</Text>
+        )
+      }
+    };
 
     return (
       <Navigator 
         initialRoute={{id: 'LugagiHome'}}
         renderScene={this.renderScene}
-        navigationBar={
-          <View style={lugagistyle.navBar} >
-              <View>
-                  <Text>Back</Text>
-              </View>
-          </View>         
-        }/>
+        navigationBar={lugagiNavBar}/>
     );
   },
 

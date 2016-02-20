@@ -5,8 +5,6 @@ var React = require('react-native');
 var FoodDetail = require('./FoodDetail.js');
 var lugagistyle = require('../Styles/lugagistyle.js');
 
-var Navigation = require('../Navigation/Navigation.js');
-
 var {
   StyleSheet,
   Text,
@@ -253,7 +251,7 @@ var LugagiHome = React.createClass({
 		if (contentType == "food" || contentType == "") {
 			this.props.navigator.push({
 			  title: 'Món ăn',
-			  component: FoodDetail,
+			  id: 'FoodDetail',
 			  passProps: {foodID: contentID}
 			});
 		}

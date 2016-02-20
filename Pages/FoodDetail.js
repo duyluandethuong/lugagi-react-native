@@ -117,7 +117,7 @@ var styles = StyleSheet.create({
 var FoodDetail = React.createClass({
 	getInitialState: function() {
 		return {
-			foodID: this.props.foodID,
+			foodID: this.props.passProps.foodID,
 			foodObject: new Object(),
 			foodType: new Object(),
 		  	foodPostDataSource: new ListView.DataSource({
