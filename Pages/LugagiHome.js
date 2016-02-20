@@ -193,7 +193,7 @@ var LugagiHome = React.createClass({
 	},
 
 	getUserInterestedFood: function(){
-		var fetchParam = "?UserID=" + this.state.currentUserID;
+		var fetchParam = "?UserID=" + this.state.currentUserID + "&Limit=12";
 		fetch("http://lugagi.com/script/smartPhoneAPI/landing/loadUserInterestedFood.php" + fetchParam, {method: "GET"})
         .then((response) => response.json())
         .then((responseData) => {
@@ -206,7 +206,8 @@ var LugagiHome = React.createClass({
 	},
 
 	getNewUsersInfo: function(){
-		fetch("http://lugagi.com/script/smartPhoneAPI/landing/loadNewUsers.php" , {method: "GET"})
+		var fetchParam = "?Limit=12";
+		fetch("http://lugagi.com/script/smartPhoneAPI/landing/loadNewUsers.php" + fetchParam, {method: "GET"})
         .then((response) => response.json())
         .then((responseData) => {
         	this.setState({
