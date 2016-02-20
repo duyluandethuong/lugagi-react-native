@@ -9,6 +9,7 @@ var {
 module.exports = StyleSheet.create({
 	appBodyContainer: {
 		flex: 1,
+		paddingBottom: 20
 	},
 	center: {
 		alignSelf: 'stretch',

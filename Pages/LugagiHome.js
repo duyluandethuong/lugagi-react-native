@@ -267,7 +267,7 @@ var LugagiHome = React.createClass({
 
 	render: function() {
 		return (
-			<ScrollView style={styles.appBodyContainer}>
+			<ScrollView style={lugagistyle.appBodyContainer}>
 				<View style={styles.randomFoodContainer}>
 					<View>
 						<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Nấu gì hôm nay?</Text>

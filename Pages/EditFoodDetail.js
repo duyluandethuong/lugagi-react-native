@@ -293,6 +293,8 @@ var EditFoodDetail = React.createClass({
 			title: 'Món ăn',
 			component: FoodDetail,
 			passProps: {foodID: this.state.foodObject.MonAnID},
+			leftButtonTitle: 'Trang chủ',
+            onLeftButtonPress: () => this.goToHome(),
 		});
 	},
 
