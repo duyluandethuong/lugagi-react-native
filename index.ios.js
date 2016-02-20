@@ -7,6 +7,7 @@
 'use strict';
 
 var React = require('react-native');
+var Navigation = require('./Navigation/Navigation.js');
 
 var {
   AppRegistry,
@@ -115,8 +116,8 @@ var LugagiApp = React.createClass({
               translucent: true,
               rightButtonTitle: 'Tài khoản',
               onRightButtonPress: () => this.navigatorRightButtonPress(),
-            }}
-          />
+          }}/>
+          
         </TabBarIOS.Item>
 
         <TabBarIOS.Item

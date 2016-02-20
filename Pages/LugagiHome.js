@@ -5,6 +5,8 @@ var React = require('react-native');
 var FoodDetail = require('./FoodDetail.js');
 var lugagistyle = require('../Styles/lugagistyle.js');
 
+var Navigation = require('../Navigation/Navigation.js');
+
 var {
   StyleSheet,
   Text,

@@ -138,7 +138,7 @@ var IngredientSelection = React.createClass({
 	      		
 	      		<View style={lugagistyle.form}>
 
-	      			<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Nhập nguyên liệu, cách nhau bằng dấu phẩy</Text>
+	      			<Text style={[lugagistyle.formLabel]}>Nhập nguyên liệu, cách nhau bằng dấu phẩy</Text>
 		      		<View style={lugagistyle.formControl}>
 			      		<TextInput
 							    style={lugagistyle.formInput}

@@ -11,6 +11,12 @@ module.exports = StyleSheet.create({
 		flex: 1,
 		paddingBottom: 20
 	},
+
+	navBar: {
+		height: 40,
+		backgroundColor: '#FF5252',
+	},
+
 	whiteBackground: {
 		backgroundColor: '#FFFFFF',
 	},
@@ -162,7 +168,8 @@ module.exports = StyleSheet.create({
 	},
 	formLabel: {
 		marginLeft: 5,
-		marginBottom: 5
+		marginBottom: 5,
+		color: '#607D8B',
 	},
 	formInput: {
 		borderWidth: 0,
