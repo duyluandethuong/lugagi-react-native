@@ -71,6 +71,13 @@ var LugagiApp = React.createClass({
 
   setTab: function(tabId) {
     this.setState({selectedTab : tabId});
+
+    // if (tabId == "featured") {
+    //   this.refs.nav.push({
+    //       title: 'Trang chủ',
+    //       component: LugagiHome,
+    //   });
+    // }
   },
 
   //Signin button on the right of the navigator
