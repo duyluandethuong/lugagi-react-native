@@ -11,6 +11,9 @@ module.exports = StyleSheet.create({
 		flex: 1,
 		paddingBottom: 20
 	},
+	whiteBackground: {
+		backgroundColor: '#FFFFFF',
+	},
 	center: {
 		alignSelf: 'stretch',
 		justifyContent: 'center'
@@ -30,6 +33,8 @@ module.exports = StyleSheet.create({
 		marginLeft: 15,
 		marginRight: 15,
 	},
+
+
 	buttonTextAccent: {
 		fontSize: 18,
 		marginTop: 10,
@@ -74,6 +79,8 @@ module.exports = StyleSheet.create({
 		alignSelf: 'stretch',
 		justifyContent: 'center'
 	},
+
+
 	textAccent: {
 		color: '#FF5252'
 	},
@@ -83,6 +90,8 @@ module.exports = StyleSheet.create({
 	textPrimary: {
 		color: '#607D8B'
 	},
+
+
 	sectionTitle: {
 		fontSize: 20,
 		marginTop: 10,
@@ -95,6 +104,8 @@ module.exports = StyleSheet.create({
 		marginBottom: 5,
 		marginLeft: 5,
 	},
+
+
 	textInput: {
 		height: 36,
 		padding: 4,
@@ -119,12 +130,14 @@ module.exports = StyleSheet.create({
 		borderColor: '#607D8B',
 		borderRadius: 4,
 	},
+
 	textMuted: {
 		color: '#808080'
 	},
 	textBold: {
 		fontWeight: 'bold',
 	},
+
 	cardTitle: {
 		color: '#FF5252',
 		fontSize: 15,
@@ -133,6 +146,9 @@ module.exports = StyleSheet.create({
 	picker: {
 		marginTop: -10,
 	},
+	
+
+
 	form: {
 		paddingTop: 5
 	},
