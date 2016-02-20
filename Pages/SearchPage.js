@@ -14,7 +14,9 @@ var {
   ActivityIndicatorIOS,
   Image,
   Component,
-  ListView
+  ListView,
+  ScrollView,
+  Alert
 } = React;
 
 //Styling
@@ -71,10 +73,9 @@ var styles = StyleSheet.create({
 });
 
 //Create class for the page
-class SearchPage extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
+var SearchPage =  React.createClass({
+	getInitialState: function() {
+		return {
 			searchString: '',
 			isLoading: false, 
 			message: '',
@@ -82,71 +83,80 @@ class SearchPage extends Component {
 		    	rowHasChanged: (row1, row2) => row1 !== row2,
 		  	}),
 		};
-	}
+	},
 
 	//Code to handle change in search textbox content
-	onSearchTextChanged(event) {
-	  this.setState({ searchString: event.nativeEvent.text });
-	}
+	onSearchTextChanged: function(event) {
+		this.setState({ searchString: event.nativeEvent.text });
+	},
 
 	//Code to handle the find button
-	onSearchPressed() {
-		var searchString = this.state.searchString;
-		var searchURL = "http://lugagi.com/script/smartPhoneAPI/search/search.php?searchName=" + searchString;
-		
-		//Display the loading icon
-		this.setState({ isLoading: true });
+	onSearchPressed: function() {
+		if (this.state.searchString != '') {
+			var searchString = this.state.searchString;
+			var searchURL = "http://lugagi.com/script/smartPhoneAPI/search/search.php?searchName=" + searchString;
+			
+			//Display the loading icon
+			this.setState({ isLoading: true });
 
-		fetch(searchURL, {method: "GET"})
-        .then((response) => response.json())
-        .then((responseData) => {
-        	console.log(responseData);
-        	this.setState({
-		      searchResultDataSource: this.state.searchResultDataSource.cloneWithRows(responseData.FoodSearchResults)
-		    });
-		    this.props.navigator.push({
-			  title: 'Kết quả',
-			  component: SearchResults,
-			  passProps: {searchResultDataSource: responseData.FoodSearchResults}
-			});
-        })
-        .done(() => {
-        	//Hide the loading icon
-        	this.setState({ isLoading: false });
-        });
-	}
+			fetch(searchURL, {method: "GET"})
+	        .then((response) => response.json())
+	        .then((responseData) => {
+	        	console.log(responseData);
+	        	this.setState({
+			      searchResultDataSource: this.state.searchResultDataSource.cloneWithRows(responseData.FoodSearchResults)
+			    });
+			    this.props.navigator.push({
+				  title: 'Kết quả',
+				  component: SearchResults,
+				  passProps: {searchResultDataSource: responseData.FoodSearchResults}
+				});
+	        })
+	        .done(() => {
+	        	//Hide the loading icon
+	        	this.setState({ isLoading: false });
+	        });
+    	}
+    	else {
+    		Alert.alert("Bạn phải nhập ít nhất 2 kí tự để tìm kiếm");
+    	}
+	},
 
 	//Render the page
-  	render() {
+  	render: function() {
   		var spinner = this.state.isLoading ?
 			( <ActivityIndicatorIOS
 			  hidden='true'
 			  size='large'/> ) :
 			( <View/>);
 	    return (
-	      	<View style={styles.appBodyContainer}>
+	      	<ScrollView style={[lugagistyle.appBodyContainer, lugagistyle.formBackground]}>
 
-		        <View style={styles.searchView}>
-				  	<TextInput
-					    style={lugagistyle.textInput}
-					    value={this.state.searchString}
-					    onChange={this.onSearchTextChanged.bind(this)}
-					    placeholder='Nhập tên món ăn hoặc bộ sưu tập'/>
-				
-					<TouchableOpacity 
-						style={styles.button}
-					    underlayColor='#99d9f4'
-					    onPress={this.onSearchPressed.bind(this)}>
-					  <Text style={lugagistyle.buttonTextAccent}>Tìm kiếm</Text>
-					</TouchableOpacity>
+		        <View style={lugagistyle.form}>
+
+				  	<View style={lugagistyle.formControl}>
+					  	<TextInput
+						    style={lugagistyle.formInput}
+						    value={this.state.searchString}
+						    onChange={this.onSearchTextChanged}
+						    placeholder='Nhập tên món ăn hoặc bộ sưu tập'/>
+					</View>
+
+					<View style={lugagistyle.formControl}>
+						<TouchableOpacity 
+							style={styles.buttonAccent}
+						    onPress={this.onSearchPressed}>
+						  <Text style={lugagistyle.buttonTextAccent}>Tìm kiếm</Text>
+						</TouchableOpacity>
+					</View>
 
 					{spinner}
 				</View>
 
-	      </View>
+	      </ScrollView>
 	    );
-  	}
-}
+  	},
+});
 
 //Export the class and permit its use in other files
 module.exports = SearchPage;

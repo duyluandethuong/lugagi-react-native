@@ -43,6 +43,12 @@ module.exports = StyleSheet.create({
 		color: '#607D8B',
 		alignSelf: 'center'
 	},
+	buttonTextNormal: {
+		fontSize: 18,
+		marginTop: 10,
+		marginBottom: 10,
+		alignSelf: 'center'
+	},
 	buttonAccent: {
 		height: 36,
 		flex: 1,
@@ -115,6 +121,9 @@ module.exports = StyleSheet.create({
 	textMuted: {
 		color: '#808080'
 	},
+	textBold: {
+		fontWeight: 'bold',
+	},
 	cardTitle: {
 		color: '#FF5252',
 		fontSize: 15,
@@ -122,6 +131,34 @@ module.exports = StyleSheet.create({
 	},
 	picker: {
 		marginTop: -10,
+	},
+	form: {
+		paddingTop: 5
+	},
+	formBackground: {
+		backgroundColor: '#EFEFF4',
+	},
+	formControl: {
+		paddingLeft: 5,
+		backgroundColor: '#FFFFFF',
+		marginBottom: 20,
+	},
+	formLabel: {
+		marginLeft: 5,
+		marginBottom: 5
+	},
+	formInput: {
+		borderWidth: 0,
+		height: 36,
+		padding: 5,
+		fontSize: 16,
+	},
+	formTextArea: {
+		marginTop: 5,
+		borderWidth: 0,
+		height: 100,
+		padding: 5,
+		fontSize: 16,
 	}
 
 });

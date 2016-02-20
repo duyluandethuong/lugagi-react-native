@@ -88,7 +88,7 @@ var LugagiApp = React.createClass({
   navigatorRightButtonPress: function() {
     this.refs.nav.push({
         title: 'Đăng nhập',
-        component: LoginPage
+        component: LoginPage,
     });
   },
 
@@ -109,7 +109,9 @@ var LugagiApp = React.createClass({
             initialRoute={{
               title: 'Trang chủ',
               component: LugagiHome, 
-              translucent: true
+              translucent: true,
+              rightButtonTitle: 'Đăng nhập',
+              onRightButtonPress: () => this.navigatorRightButtonPress(),
             }}
           />
         </TabBarIOS.Item>
@@ -163,7 +165,6 @@ var LugagiApp = React.createClass({
             initialRoute={{
               title: 'Tìm kiếm',
               component: SearchPage,
-              rightButtonTitle: "Test",
               translucent: true
             }}
           />

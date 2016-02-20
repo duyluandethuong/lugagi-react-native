@@ -193,6 +193,7 @@ var LugagiHome = React.createClass({
 	},
 
 	getUserInterestedFood: function(){
+
 		var fetchParam = "?UserID=" + this.state.currentUserID + "&Limit=12";
 		fetch("http://lugagi.com/script/smartPhoneAPI/landing/loadUserInterestedFood.php" + fetchParam, {method: "GET"})
         .then((response) => response.json())

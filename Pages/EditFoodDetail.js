@@ -30,73 +30,11 @@ var PickerItem = Picker.Item;
 
 //Styling
 var styles = StyleSheet.create({
-	appBodyContainer: {
-		flex: 1,
-		marginBottom: 0,
-	},
-  	foodInfoContainer: {
-		flex: 1,
-  	},
-  	listViewContainer: {
-  		marginTop: 10,
-  		marginBottom: 5,
-		flex: 1,
-  	},
-  	listViewItemContainer: {
-  		marginTop: 10,
-  		marginLeft: 10,
-  		marginRight: 10,
-	    padding: 5,
-	    flex: 1,
-	    backgroundColor: '#F6F6F6',
-  	},
-  	postUserInformation: {
-  		flex: 1,
-  		flexDirection: 'row',
-  	},
-  	postContent: {
-  		flex: 1,
-  		marginTop: 10,
-  	},
-  	rightContainer: {
-	    flex: 1,
-	},
-	buttonText: {
-		fontSize: 18,
-		color: '#48BBEC',
-		alignSelf: 'center'
-	},
-	button: {
-		height: 36,
-		flex: 1,
-		borderRadius: 5,
-		marginBottom: 10,
-		alignSelf: 'stretch',
-		justifyContent: 'center'
-	},
-	heroFoodImageContainer: {
-		flex: 1,
-	},
-	heroFoodImage: {
-		width: 500,
+	thumb: {
+		width: 300,
 		height: 200,
-		alignSelf: 'stretch',
-		justifyContent: 'center'
-	},
-	profilePic: {
-		width: 30,
-		height: 30,
-		borderRadius: 15,
-		marginRight: 5,
-	},
-	postImages: {
-		width: 120,
-		height: 80,
+		alignSelf: 'center',
 		marginBottom: 10,
-	},
-	postImagesContainer: {
-		flex: 1,
-		flexDirection: "row",
 	},
 });
 
@@ -113,7 +51,7 @@ var EditFoodDetail = React.createClass({
 		  	editPermission: 'N',
 		  	foodTypeArray: [],
 		  	showFoodTypeSelector: false,
-		  	showHideFoodTypePickerButtonText: "Chọn cách chế biến",
+		  	showHideFoodTypePickerButtonText: "Đổi cách chế biến",
 		  	foodImageSource: '',
 			showFoodImage: false,
 			showCurrentFoodImage: true,
@@ -355,8 +293,6 @@ var EditFoodDetail = React.createClass({
 			title: 'Món ăn',
 			component: FoodDetail,
 			passProps: {foodID: this.state.foodObject.MonAnID},
-			leftButtonTitle: 'Trang chủ',
-			onLeftButtonPress: () => this.goToHome(),
 		});
 	},
 
@@ -397,70 +333,80 @@ var EditFoodDetail = React.createClass({
 		var foodImage;
 		if (this.state.showCurrentFoodImage == true) {
 			foodImage = (<Image source={{uri: this.state.foodImageSource}}
-								style={styles.heroFoodImage}/>
+								style={styles.thumb}/>
 						);
 		}
 		else {
 			foodImage = (<Image source={this.state.foodImageSource}
-								style={styles.heroFoodImage}/>
+								style={styles.thumb}/>
 						);
 		}
 
 		return (
-			<ScrollView style={styles.appBodyContainer}>
-				<View style={styles.foodInfoContainer}>
+			<ScrollView style={[lugagistyle.appBodyContainer, lugagistyle.formBackground]}>
 
-					<View style={styles.foodInfoText}>
+					<View style={lugagistyle.form}>
 
-						<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Tên món ăn</Text>
-					  	<TextInput
-						    style={lugagistyle.textInput}
-						    value={this.state.foodObject.MonAnName}
-						    onChange={this.onFoodNameChange}
-						    placeholder='Ví dụ: Cá lóc kho tộ'/>
+						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Tên món ăn</Text>
+						<View style={lugagistyle.formControl}>
+						  	<TextInput
+							    style={lugagistyle.formInput}
+							    value={this.state.foodObject.MonAnName}
+							    onChange={this.onFoodNameChange}
+							    placeholder='Ví dụ: Cá lóc kho tộ'/>
+						</View>
 
-						<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Mô tả</Text>
-					  	<TextInput
-						    style={lugagistyle.textArea}
-						    value={this.state.foodObject.MonAnDescription}
-						    onChange={this.onFoodDescriptionChange}
-						    multiline={true}
-						    numberOfLines={5}
-						    placeholder='xxxx'/>
+						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Mô tả</Text>
+						<View style={lugagistyle.formControl}>
+						  	<TextInput
+							    style={lugagistyle.formTextArea}
+							    value={this.state.foodObject.MonAnDescription}
+							    onChange={this.onFoodDescriptionChange}
+							    multiline={true}
+							    numberOfLines={5}
+							    placeholder='Ví dụ: Cá lóc kho tộ là món ngon của miền Nam, rất đơn giản nhưng rất đậm đà'/>
+						</View>
 
-						<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Cách chế biến: {this.state.foodType.LoaiMonAnDescription}</Text>
-						<TouchableOpacity
-						    onPress={this.showHideFoodTypePicker}>
-						  <Text style={lugagistyle.buttonTextAccent}>{this.state.showHideFoodTypePickerButtonText}</Text>
-						</TouchableOpacity>
+						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Cách chế biến</Text>
+						<View style={lugagistyle.formControl}>
+							<Text style={lugagistyle.buttonTextNormal}>{this.state.foodType.LoaiMonAnDescription}</Text>
+							<TouchableOpacity
+							    onPress={this.showHideFoodTypePicker}>
+							  <Text style={lugagistyle.buttonTextAccent}>{this.state.showHideFoodTypePickerButtonText}</Text>
+							</TouchableOpacity>
+						</View>
 
 						{foodTypePicker}
 
-						<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Hình ảnh</Text>
-						<TouchableOpacity
-						    onPress={this.onSelectImageClicked}>
-						  <Text style={lugagistyle.buttonTextAccent}>Bấm để chọn ảnh cho món ăn</Text>
-						</TouchableOpacity>
+						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Hình ảnh</Text>
+						<View style={lugagistyle.formControl}>
+							<TouchableOpacity
+							    onPress={this.onSelectImageClicked}>
+							  <Text style={lugagistyle.buttonTextAccent}>Bấm để chọn ảnh cho món ăn</Text>
+							</TouchableOpacity>
 
-						{foodImage}
+							{foodImage}
 
-						{spinner}
+							{spinner}
+						</View>
 
-						<TouchableOpacity 
-							style={[lugagistyle.buttonAccentOutline, lugagistyle.marginDeep]}
-						    onPress={this.onUpdateFoodDetailPressed}>
-						  <Text style={lugagistyle.buttonTextAccent}>CẬP NHẬT THÔNG TIN</Text>
-						</TouchableOpacity>
+						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Hoàn tất</Text>
+						<View style={lugagistyle.formControl}>
+							<TouchableOpacity 
+								style={[lugagistyle.buttonAccent]}
+							    onPress={this.onUpdateFoodDetailPressed}>
+							  <Text style={lugagistyle.buttonTextAccent}>LƯU</Text>
+							</TouchableOpacity>
+						</View>
 
-						<TouchableOpacity 
-							style={[lugagistyle.buttonPrimaryOutline, lugagistyle.marginDeep]}
-						    onPress={this.cancelEditFood}>
-						  <Text style={lugagistyle.buttonTextPrimary}>HỦY BỎ</Text>
-						</TouchableOpacity>
-
+						<View style={lugagistyle.formControl}>
+							<TouchableOpacity 
+								style={[lugagistyle.buttonPrimary]}
+							    onPress={this.cancelEditFood}>
+							  <Text style={lugagistyle.buttonTextPrimary}>HỦY BỎ</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
-
-				</View>
 
 			</ScrollView>
 		);

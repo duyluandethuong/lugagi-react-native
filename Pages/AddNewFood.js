@@ -293,47 +293,60 @@ var AddNewFood =  React.createClass({
 		}
 
 		return (
-	      	<ScrollView style={lugagistyle.appBodyContainer}>
+	      	<ScrollView style={[lugagistyle.appBodyContainer, lugagistyle.formBackground]}>
 
-		        <View style={styles.searchView}>
-		        	<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Tên món ăn</Text>
-				  	<TextInput
-					    style={lugagistyle.textInput}
-					    value={this.state.searchString}
-					    onChange={this.onFoodNameChange}
-					    placeholder='Ví dụ: Cá lóc kho tộ'/>
+		        <View style={lugagistyle.form}>
+		        	<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Tên món ăn</Text>
+		        	<View style={lugagistyle.formControl}>
+					  	<TextInput
+						    style={lugagistyle.formInput}
+						    value={this.state.searchString}
+						    onChange={this.onFoodNameChange}
+						    placeholder='Ví dụ: Cá lóc kho tộ'/>
+					</View>
 
-					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Mô tả</Text>
-					<TextInput
-					    style={lugagistyle.textArea}
-					    value={this.state.searchString}
-					    onChange={this.onFoodDescriptionChange}
-					    placeholder='Ví dụ: Cá lóc kho tộ là món ngon của miền Nam, rất đơn giản nhưng rất đậm đà'/>
+					<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Mô tả</Text>
+					<View style={lugagistyle.formControl}>
+						<TextInput
+						    style={lugagistyle.formTextArea}
+						    value={this.state.searchString}
+						    onChange={this.onFoodDescriptionChange}
+						    multiline={true}
+						    numberOfLines={5}
+						    placeholder='Ví dụ: Cá lóc kho tộ là món ngon của miền Nam, rất đơn giản nhưng rất đậm đà'/>
+					</View>
 
-					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Cách chế biến: {this.state.newFoodTypeText}</Text>
-					<TouchableOpacity
-					    onPress={this.showHideFoodTypePicker}>
-					  <Text style={lugagistyle.buttonTextAccent}>{this.state.showHideFoodTypePickerButtonText}</Text>
-					</TouchableOpacity>
+					<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Cách chế biến</Text>
+					<View style={lugagistyle.formControl}>
+						<Text style={lugagistyle.buttonTextNormal}>{this.state.newFoodTypeText}</Text>
+						<TouchableOpacity
+						    onPress={this.showHideFoodTypePicker}>
+						  <Text style={lugagistyle.buttonTextAccent}>{this.state.showHideFoodTypePickerButtonText}</Text>
+						</TouchableOpacity>
+					</View>
 
 					{foodTypePicker}
 
-					<Text style={[lugagistyle.sectionTitle, lugagistyle.textMuted]}>Hình ảnh</Text>
-					<TouchableOpacity
-					    onPress={this.onSelectImageClicked}>
-					  <Text style={lugagistyle.buttonTextAccent}>Bấm để chọn ảnh cho món ăn</Text>
-					</TouchableOpacity>
+					<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Hình ảnh</Text>
+					<View style={lugagistyle.formControl}>
+						<TouchableOpacity
+						    onPress={this.onSelectImageClicked}>
+						  <Text style={lugagistyle.buttonTextAccent}>Bấm để chọn ảnh cho món ăn</Text>
+						</TouchableOpacity>
 
-					{foodImage}
+						{foodImage}
 
-					<TouchableOpacity 
-						style={[lugagistyle.buttonAccentOutline, lugagistyle.marginDeep]}
-						underlayColor="#f44336"
-					    onPress={this.onCreateNewFoodPressed}>
-					  <Text style={lugagistyle.buttonTextAccent}>TẠO MỚI</Text>
-					</TouchableOpacity>
+						{spinner}
+					</View>
 
-					{spinner}
+					<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Hoàn tất</Text>
+					<View style={lugagistyle.formControl}>
+						<TouchableOpacity 
+							style={[lugagistyle.buttonAccent]}
+						    onPress={this.onCreateNewFoodPressed}>
+						  <Text style={lugagistyle.buttonTextAccent}>TẠO</Text>
+						</TouchableOpacity>
+					</View>
 
 				</View>
 
@@ -354,7 +367,8 @@ var styles = StyleSheet.create({
 	thumb: {
 		width: 300,
 		height: 200,
-		alignSelf: 'center'
+		alignSelf: 'center',
+		marginBottom: 10,
 	},
 	listViewContainer: {
 		flex: 1,
