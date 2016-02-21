@@ -1,7 +1,6 @@
 'use strict';
  
 var React = require('react-native');
-var SearchResults = require('./SearchResults');
 var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
@@ -108,7 +107,8 @@ var SearchPage =  React.createClass({
 			    });
 			    this.props.navigator.push({
 				  title: 'Kết quả',
-				  component: SearchResults,
+				  id: 'SearchResults',
+				  type: 'Modal',
 				  passProps: {searchResultDataSource: responseData.FoodSearchResults}
 				});
 	        })

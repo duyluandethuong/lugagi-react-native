@@ -22,33 +22,28 @@ module.exports = StyleSheet.create({
 		opacity: 1
 	},
 
-	statusBar: {
-		backgroundColor: accentColor,
-	},
-
-
 	navBar: {
 		position: 'absolute',
 		top: 0,
 		left: 0,
 		height: 64,
 		width: screenWidth,
-		backgroundColor: accentColor,
+		backgroundColor: primaryColor,
 		alignSelf: 'stretch',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 
 	navBarLeftText: {
 		color: '#FFFFFF',
 		marginTop: 10,
 		marginLeft: 10,
-		fontSize: 20,
+		fontSize: 17,
 	},
 
 	navBarTitle: {
 		color: '#FFFFFF',
 		marginTop: 10,
-		fontSize: 18,
+		fontSize: 17,
 		fontWeight: '500',
 	},
 
@@ -138,6 +133,9 @@ module.exports = StyleSheet.create({
 		color: '#FFFFFF'
 	},
 
+	textTitle: {
+		fontSize: 16
+	},
 
 	sectionTitle: {
 		fontSize: 20,

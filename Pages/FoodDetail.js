@@ -201,6 +201,7 @@ var FoodDetail = React.createClass({
 		this.props.navigator.push({
 		  	title: 'Sửa thông tin',
 		  	id: 'EditFoodDetail',
+		  	type: 'Modal',
 		  	passProps: {foodID: this.state.foodObject.MonAnID}
 		});
 	},

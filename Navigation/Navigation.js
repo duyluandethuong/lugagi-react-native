@@ -4,14 +4,20 @@ var React = require('react-native');
 var Icon = require('react-native-vector-icons/Ionicons'); //https://github.com/oblador/react-native-vector-icons
 
 var LugagiHome = require('../Pages/LugagiHome.js');
-var SearchPage = require('../Pages/SearchPage.js');
+
 var LoginPage = require('../Pages/LoginPage.js');
 var More = require('../Pages/More.js');
+
 var SuggestionSelection = require('../Pages/SuggestionSelection.js');
+var IngredientSelection = require('../Pages/IngredientSelection.js');
+var WeekMenuSuggestion = require('../Pages/WeekMenuSuggestion.js');
 
 var AddNewFood = require('../Pages/AddNewFood.js');
 var FoodDetail = require('../Pages/FoodDetail.js');
 var EditFoodDetail = require('../Pages/EditFoodDetail.js');
+
+var SearchPage = require('../Pages/SearchPage.js');
+var SearchResults = require('../Pages/SearchResults');
 
 var lugagistyle = require('../Styles/lugagistyle.js');
 
@@ -55,7 +61,24 @@ var NavigationBarRouteMapper = {
   }
 };
 
+
 var Navigation = React.createClass({
+
+  getInitialState: function() {
+    return {
+      initialRouteId: this.props.initialRoute.id,
+      initialRouteTitle: this.props.initialRoute.title,
+    };
+  },
+
+  configureScene: function(route, routeStack) {
+    if(route.type == 'Modal') {
+      return Navigator.SceneConfigs.FloatFromBottom;
+    }
+    else {
+      return Navigator.SceneConfigs.PushFromRight ;
+    }
+  },
 
   render: function() {
     
@@ -68,7 +91,8 @@ var Navigation = React.createClass({
 
     return (
       <Navigator 
-        initialRoute={{id: 'LugagiHome', title: 'Trang chủ'}}
+        configureScene={ this.configureScene }
+        initialRoute={{id: this.state.initialRouteId, title: this.state.initialRouteTitle}}
         renderScene={this.renderScene}
         navigationBar={navBar}/>
     );
@@ -78,10 +102,25 @@ var Navigation = React.createClass({
     switch (route.id) {
       case 'LugagiHome':
         return (<LugagiHome navigator={navigator} title="Trang chủ"/>);
+      
+      case 'AddNewFood':
+        return (<AddNewFood navigator={navigator} title="Món ăn" passProps={route.passProps}/>);
       case 'FoodDetail':
         return (<FoodDetail navigator={navigator} title="Món ăn" passProps={route.passProps}/>);
       case 'EditFoodDetail':
         return (<EditFoodDetail navigator={navigator} title="Sửa thông tin" passProps={route.passProps}/>);
+      
+      case 'SuggestionSelection':
+        return (<SuggestionSelection navigator={navigator} title="Bạn muốn gợi ý theo kiểu nào?" passProps={route.passProps}/>);
+      case 'IngredientSelection':
+        return (<IngredientSelection navigator={navigator} title="Bạn muốn gợi ý theo kiểu nào?" passProps={route.passProps}/>);
+      case 'WeekMenuSuggestion':
+        return (<WeekMenuSuggestion navigator={navigator} title="Bạn muốn gợi ý theo kiểu nào?" passProps={route.passProps}/>);
+
+      case 'SearchPage':
+        return (<SearchPage navigator={navigator} title="Trang chủ" passProps={route.passProps}/>);
+      case 'SearchResults':
+        return (<SearchResults navigator={navigator} title="Trang chủ" passProps={route.passProps}/>);
     }
   },
 });

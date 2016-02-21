@@ -3,8 +3,7 @@
 //https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 
 var React = require('react-native');
-var IngredientSelection = require('./IngredientSelection.js');
-var WeekMenuSuggestion = require('./WeekMenuSuggestion.js');
+
 
 var {
   StyleSheet,
@@ -22,7 +21,7 @@ var {
 
 var styles = StyleSheet.create({
   appBodyContainer: {
-    paddingTop: 10,
+    paddingTop: 44,
     flexDirection: 'column',
     flexWrap: 'wrap',
   },
@@ -79,14 +78,14 @@ var SuggestionSelection = React.createClass({
   onIngredientSuggestionPress: function() {
     this.props.navigator.push({
       title: 'Gợi ý nguyên liệu',
-      component: IngredientSelection,
+      id: 'IngredientSelection',
     });
   },
 
   onWeekMenuSuggestionPress: function() {
     this.props.navigator.push({
       title: 'Gợi ý cả tuần',
-      component: WeekMenuSuggestion,
+      id: 'WeekMenuSuggestion',
       rightButtonTitle: 'Lưu',
       onRightButtonPress: () => {this.saveCustomMenu()},
     });

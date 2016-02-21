@@ -273,14 +273,14 @@ var LugagiHome = React.createClass({
 						<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Nấu gì hôm nay?</Text>
 					</View>
 
-					<TouchableHighlight onPress={this.goesToRandomFood}>
+					<TouchableOpacity onPress={this.goesToRandomFood}>
 						<View>
 							<Image
 								source={{uri: this.state.randomFoodImageURL}}
 								style={styles.image}/>
 							<Text style={styles.randomFoodName}>{this.state.randomFoodName}</Text>
 						</View>
-					</TouchableHighlight>
+					</TouchableOpacity>
 
 					<TouchableOpacity style={lugagistyle.buttonAccent}
 					    underlayColor={lugagistyle.buttonAccentUnderlay}

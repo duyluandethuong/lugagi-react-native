@@ -107,7 +107,6 @@ var LugagiApp = React.createClass({
                             this.setTab("featured");
                           }}>
           <Navigation initialRoute={{id: 'LugagiHome', title: 'Trang chủ'}}/>
-          
         </TabBarIOS.Item>
 
         <TabBarIOS.Item
@@ -116,16 +115,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("suggestion");
                           }}>
-          <React.NavigatorIOS
-            ref="suggestionNav"
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Gợi ý',
-              component: SuggestionSelection,
-              translucent: true
-            }}
-          />
+          <Navigation initialRoute={{id: 'SuggestionSelection', title: 'Bạn muốn gợi ý theo kiểu nào?'}}/>
         </TabBarIOS.Item>
 
         <TabBarIOS.Item
@@ -135,16 +125,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("addNewFood");
                           }}>
-          <React.NavigatorIOS
-            ref="addNewFood"
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Thêm món mới',
-              component: AddNewFood,
-              translucent: true
-            }}
-          />
+          <Navigation initialRoute={{id: 'AddNewFood', title: 'Tạo món mới'}}/>
         </TabBarIOS.Item>
 
         <TabBarIOS.Item 
@@ -153,15 +134,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("search");
                           }}>
-          <React.NavigatorIOS
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Tìm kiếm',
-              component: SearchPage,
-              translucent: true
-            }}
-          />
+          <Navigation initialRoute={{id: 'SearchPage', title: 'Tìm kiếm'}}/>
         </TabBarIOS.Item>
 
         <TabBarIOS.Item 

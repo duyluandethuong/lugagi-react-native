@@ -195,7 +195,7 @@ var AddNewFood =  React.createClass({
 		        		if (submitStatus == "success") {
 						    this.props.navigator.push({
 							  title: 'Món ăn',
-							  component: FoodDetail,
+							  id: 'FoodDetail',
 							  passProps: {foodID: responseData.InsertNewFoodResult[0].MonAnID}
 							});
 						}
@@ -215,19 +215,21 @@ var AddNewFood =  React.createClass({
 	    		Alert.alert('Thiếu thông tin', missingInfo);
 	    	}
     	}
-    	//If the user has not logged in yet, direct him to the login page
-    	Alert.alert(
-		  'Chưa đăng nhập',
-		  'Bạn cần phải đăng nhập trước khi tạo món mới',
-		  [
-		    {text: 'Hủy', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-		    {text: 'Đăng nhập', onPress: () => this.props.navigator.push({
-												  title: 'Đăng nhập',
-												  component: LoginPage,
-												})
-			},
-		  ]
-		);
+    	else {
+	    	//If the user has not logged in yet, direct him to the login page
+	    	Alert.alert(
+			  'Chưa đăng nhập',
+			  'Bạn cần phải đăng nhập trước khi tạo món mới',
+			  [
+			    {text: 'Hủy', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+			    {text: 'Đăng nhập', onPress: () => this.props.navigator.push({
+													  title: 'Đăng nhập',
+													  component: LoginPage,
+													})
+				},
+			  ]
+			);
+    	}
 	},
 
 	showHideFoodTypePicker: function () {
