@@ -3,6 +3,7 @@
 //var Swiper = require('react-native-swiper');
 var React = require('react-native');
 var FoodDetail = require('./FoodDetail.js');
+var CollectionDetail = require('./CollectionDetail.js');
 var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
@@ -253,6 +254,13 @@ var LugagiHome = React.createClass({
 			  title: 'Món ăn',
 			  component: FoodDetail,
 			  passProps: {foodID: contentID}
+			});
+		}
+		else if (contentType == "collection") {
+			this.props.navigator.push({
+			  title: 'Bộ sưu tập',
+			  component: CollectionDetail,
+			  passProps: {collectionID: contentID}
 			});
 		}
 	},
