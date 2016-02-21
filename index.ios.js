@@ -106,7 +106,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("featured");
                           }}>
-          <Navigation initialRoute={{id: 'LugagiHome'}}/>
+          <Navigation initialRoute={{id: 'LugagiHome', title: 'Trang chủ'}}/>
           
         </TabBarIOS.Item>
 

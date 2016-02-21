@@ -41,7 +41,7 @@ var styles = StyleSheet.create({
 var EditFoodDetail = React.createClass({
 	getInitialState: function() {
 		return {
-			foodID: this.props.foodID,
+			foodID: this.props.passProps.foodID,
 			foodObject: new Object(),
 			foodType: new Object(),
 		  	isLoading: true,
@@ -289,12 +289,10 @@ var EditFoodDetail = React.createClass({
 
 	goToFoodDetail: function() {
 		var FoodDetail = require('./FoodDetail.js');
-		this.props.navigator.resetTo({
+		this.props.navigator.push({
 			title: 'Món ăn',
-			component: FoodDetail,
-			passProps: {foodID: this.state.foodObject.MonAnID},
-			leftButtonTitle: 'Trang chủ',
-            onLeftButtonPress: () => this.goToHome(),
+			id: 'FoodDetail',
+			passProps: {foodID: this.state.foodObject.MonAnID}
 		});
 	},
 

@@ -9,28 +9,49 @@ var {
 import Dimensions from 'Dimensions';
 var screenWidth = Dimensions.get('window').width;
 
+var accentColor = '#FF5252';
+var primaryColor = '#607D8B';
+
 module.exports = StyleSheet.create({
 	appBodyContainer: {
 		flex: 1,
 		paddingTop: 45,
-		paddingBottom: 20
+		paddingBottom: 20,
+		marginTop: 20,
+		marginBottom: 44,
+		opacity: 1
 	},
 
 	statusBar: {
-		backgroundColor: '#FF5252',
-		opacity: 1,
+		backgroundColor: accentColor,
 	},
+
 
 	navBar: {
 		position: 'absolute',
 		top: 0,
 		left: 0,
-		height: 44,
+		height: 64,
 		width: screenWidth,
-		marginTop: 20,
-		backgroundColor: '#FF5252',
-		opacity: 0.95,
+		backgroundColor: accentColor,
+		alignSelf: 'stretch',
+		justifyContent: 'center'
 	},
+
+	navBarLeftText: {
+		color: '#FFFFFF',
+		marginTop: 10,
+		marginLeft: 10,
+		fontSize: 20,
+	},
+
+	navBarTitle: {
+		color: '#FFFFFF',
+		marginTop: 10,
+		fontSize: 18,
+		fontWeight: '500',
+	},
+
 
 	whiteBackground: {
 		backgroundColor: '#FFFFFF',
@@ -60,14 +81,14 @@ module.exports = StyleSheet.create({
 		fontSize: 18,
 		marginTop: 10,
 		marginBottom: 10,
-		color: '#FF5252',
+		color: accentColor,
 		alignSelf: 'center'
 	},
 	buttonTextPrimary: {
 		fontSize: 18,
 		marginTop: 10,
 		marginBottom: 10,
-		color: '#607D8B',
+		color: primaryColor,
 		alignSelf: 'center'
 	},
 	buttonTextNormal: {
@@ -86,7 +107,7 @@ module.exports = StyleSheet.create({
 		height: 36,
 		flex: 1,
 		borderWidth: 1,
-		borderColor: '#FF5252',
+		borderColor: accentColor,
 		borderRadius: 4,
 		alignSelf: 'stretch',
 		justifyContent: 'center'
@@ -95,7 +116,7 @@ module.exports = StyleSheet.create({
 		height: 36,
 		flex: 1,
 		borderWidth: 1,
-		borderColor: '#607D8B',
+		borderColor: primaryColor,
 		borderRadius: 4,
 		alignSelf: 'stretch',
 		justifyContent: 'center'
@@ -103,13 +124,18 @@ module.exports = StyleSheet.create({
 
 
 	textAccent: {
-		color: '#FF5252'
+		color: accentColor
 	},
 	textAccentContrast: {
 		color: '#FFFDFF'
 	},
+
 	textPrimary: {
-		color: '#607D8B'
+		color: primaryColor
+	},
+
+	textWhite: {
+		color: '#FFFFFF'
 	},
 
 
@@ -136,7 +162,7 @@ module.exports = StyleSheet.create({
 		marginRight: 5,
 		fontSize: 16,
 		borderWidth: 1,
-		borderColor: '#607D8B',
+		borderColor: primaryColor,
 		borderRadius: 4,
 	},
 	textArea: {
@@ -148,7 +174,7 @@ module.exports = StyleSheet.create({
 		marginRight: 5,
 		fontSize: 16,
 		borderWidth: 1,
-		borderColor: '#607D8B',
+		borderColor: primaryColor,
 		borderRadius: 4,
 	},
 
@@ -160,7 +186,7 @@ module.exports = StyleSheet.create({
 	},
 
 	cardTitle: {
-		color: '#FF5252',
+		color: accentColor,
 		fontSize: 15,
 		fontWeight: 'bold',
 	},
@@ -184,7 +210,7 @@ module.exports = StyleSheet.create({
 	formLabel: {
 		marginLeft: 5,
 		marginBottom: 5,
-		color: '#607D8B',
+		color: primaryColor,
 	},
 	formInput: {
 		borderWidth: 0,

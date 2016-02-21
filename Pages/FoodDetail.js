@@ -22,10 +22,6 @@ var {
 
 //Styling
 var styles = StyleSheet.create({
-	appBodyContainer: {
-		flex: 1,
-		marginBottom: 0,
-	},
   	foodInfoContainer: {
 		flex: 1,
   	},
@@ -202,10 +198,9 @@ var FoodDetail = React.createClass({
 	},
 
 	goToFoodDetailEdit: function() {
-		var EditFoodDetail = require('./EditFoodDetail.js');
 		this.props.navigator.push({
 		  	title: 'Sửa thông tin',
-		  	component: EditFoodDetail,
+		  	id: 'EditFoodDetail',
 		  	passProps: {foodID: this.state.foodObject.MonAnID}
 		});
 	},
@@ -231,7 +226,7 @@ var FoodDetail = React.createClass({
 		}
 
 		return (
-			<ScrollView style={styles.appBodyContainer}>
+			<ScrollView style={lugagistyle.appBodyContainer}>
 				<View style={styles.foodInfoContainer}>
 					<View style={styles.heroFoodImageContainer}>
 						<Image source={{uri: fullImageURL}}

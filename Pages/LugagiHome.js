@@ -260,7 +260,7 @@ var LugagiHome = React.createClass({
 	goesToRandomFood: function() {
 		this.props.navigator.push({
 		  title: 'Món ăn',
-		  component: FoodDetail,
+		  id: 'FoodDetail',
 		  passProps: {foodID: this.state.randomFoodID}
 		});
 	},
