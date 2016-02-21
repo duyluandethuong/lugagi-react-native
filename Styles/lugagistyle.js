@@ -160,6 +160,39 @@ module.exports = StyleSheet.create({
 		height: 100,
 		padding: 5,
 		fontSize: 16,
-	}
+	},
+	listViewContainer: {
+  		marginTop: 0,
+  		marginBottom: 5,
+		flex: 1,
+		height: 150,
+  	},
+  	listViewItemContainer: {
+  		marginRight: 5,
+	    padding: 5,
+	    alignItems: 'center',
+	    flex: 1,
+    	width: 150,
+	    height: 150,
+	    backgroundColor: '#F6F6F6',
+  	},
+  	rightContainer: {
+	    flex: 1,
+	},
+	image: {
+		width: 500,
+		height: 150,
+		justifyContent: 'center',
+		alignSelf: 'stretch',
+	},
+	thumb: {
+		width: 150,
+		height: 100
+	},
+	roundThumb: {
+		height: 100,
+		width: 100,
+		borderRadius: 50,
+	},
 
 });
