@@ -27,7 +27,7 @@ module.exports = StyleSheet.create({
 		top: 0,
 		left: 0,
 		height: 64,
-		width: screenWidth,
+		flex: 1,
 		backgroundColor: primaryColor,
 		alignSelf: 'stretch',
 		justifyContent: 'center',

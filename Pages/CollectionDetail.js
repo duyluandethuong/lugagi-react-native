@@ -93,7 +93,7 @@ var CollectionDetail = React.createClass ({
     if (contentType == "food" || contentType == "") {
       this.props.navigator.push({
         title: 'Món ăn',
-        component: FoodDetail,
+        id: 'FoodDetail',
         passProps: {foodID: contentID}
       });
     }
@@ -131,7 +131,9 @@ var CollectionDetail = React.createClass ({
 
   render: function() {
     return (
-      <ScrollView onLayout={(event)=> this.updateLayout(event)} style={collectionStyles.pageContainer}>
+      <ScrollView 
+          style={lugagistyle.appBodyContainer}
+          onLayout={(event)=> this.updateLayout(event)} style={collectionStyles.pageContainer}>
         <View style={collectionStyles.collectionInfo}>
           <View style={{width:70,height:70, margin: this.state.itemMargin}}>
             <Image source={{uri: this.state.userImageURL}} style={collectionStyles.roundThumb}/>

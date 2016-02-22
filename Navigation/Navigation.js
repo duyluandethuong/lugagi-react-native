@@ -16,6 +16,8 @@ var AddNewFood = require('../Pages/AddNewFood.js');
 var FoodDetail = require('../Pages/FoodDetail.js');
 var EditFoodDetail = require('../Pages/EditFoodDetail.js');
 
+var CollectionDetail = require('../Pages/CollectionDetail.js');
+
 var SearchPage = require('../Pages/SearchPage.js');
 var SearchResults = require('../Pages/SearchResults');
 
@@ -101,10 +103,10 @@ var Navigation = React.createClass({
   },
 
   renderScene: function(route, navigator) {
+
     switch (route.id) {
       case 'LugagiHome':
         return (<LugagiHome navigator={navigator} title="Trang chủ"/>);
-      
       case 'AddNewFood':
         return (<AddNewFood navigator={navigator} title="Món ăn" passProps={route.passProps}/>);
       case 'FoodDetail':
@@ -112,6 +114,9 @@ var Navigation = React.createClass({
       case 'EditFoodDetail':
         return (<EditFoodDetail navigator={navigator} title="Sửa thông tin" passProps={route.passProps}/>);
       
+      case 'CollectionDetail':
+        return (<CollectionDetail navigator={navigator} title="Trang chủ" passProps={route.passProps}/>);
+
       case 'SuggestionSelection':
         return (<SuggestionSelection navigator={navigator} title="Bạn muốn gợi ý theo kiểu nào?" passProps={route.passProps}/>);
       case 'IngredientSelection':

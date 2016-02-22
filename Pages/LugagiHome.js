@@ -255,6 +255,13 @@ var LugagiHome = React.createClass({
 			  passProps: {foodID: contentID}
 			});
 		}
+		else if (contentType == "collection") {
+			this.props.navigator.push({
+			  title: 'Bộ sưu tập',
+			  id: 'CollectionDetail',
+			  passProps: {collectionID: contentID}
+			});
+		}
 	},
 
 	goesToRandomFood: function() {
