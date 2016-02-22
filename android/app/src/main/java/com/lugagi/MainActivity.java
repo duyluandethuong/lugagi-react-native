@@ -1,8 +1,13 @@
 package com.lugagi;
 
 import com.facebook.react.ReactActivity;
+<<<<<<< HEAD
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.imagepicker.ImagePickerPackage;
+=======
+import com.imagepicker.ImagePickerPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+>>>>>>> 73eb77b1d49778205431b97ad4bfa5214ce669fb
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
@@ -37,8 +42,13 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+<<<<<<< HEAD
         new VectorIconsPackage(),
         new ImagePickerPackage()
+=======
+        new ImagePickerPackage(),
+        new VectorIconsPackage()
+>>>>>>> 73eb77b1d49778205431b97ad4bfa5214ce669fb
       );
     }
 }
