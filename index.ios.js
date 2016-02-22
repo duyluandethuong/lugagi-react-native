@@ -7,6 +7,7 @@
 'use strict';
 
 var React = require('react-native');
+var Navigation = require('./Navigation/Navigation.js');
 
 var {
   AppRegistry,
@@ -105,18 +106,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("featured");
                           }}>
-          <React.NavigatorIOS
-            ref="nav"
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Trang chủ',
-              component: LugagiHome, 
-              translucent: true,
-              rightButtonTitle: 'Tài khoản',
-              onRightButtonPress: () => this.navigatorRightButtonPress(),
-            }}
-          />
+          <Navigation initialRoute={{id: 'LugagiHome', title: 'Trang chủ'}}/>
         </TabBarIOS.Item>
 
         <TabBarIOS.Item
@@ -125,16 +115,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("suggestion");
                           }}>
-          <React.NavigatorIOS
-            ref="suggestionNav"
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Gợi ý',
-              component: SuggestionSelection,
-              translucent: true
-            }}
-          />
+          <Navigation initialRoute={{id: 'SuggestionSelection', title: 'Bạn muốn gợi ý theo kiểu nào?'}}/>
         </TabBarIOS.Item>
 
         <TabBarIOS.Item
@@ -144,16 +125,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("addNewFood");
                           }}>
-          <React.NavigatorIOS
-            ref="addNewFood"
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Thêm món mới',
-              component: AddNewFood,
-              translucent: true
-            }}
-          />
+          <Navigation initialRoute={{id: 'AddNewFood', title: 'Tạo món mới'}}/>
         </TabBarIOS.Item>
 
         <TabBarIOS.Item 
@@ -162,15 +134,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("search");
                           }}>
-          <React.NavigatorIOS
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Tìm kiếm',
-              component: SearchPage,
-              translucent: true
-            }}
-          />
+          <Navigation initialRoute={{id: 'SearchPage', title: 'Tìm kiếm'}}/>
         </TabBarIOS.Item>
 
         <TabBarIOS.Item 
@@ -179,17 +143,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("more");
                           }}>
-
-          <React.NavigatorIOS
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Tùy chọn',
-              component: More,
-              translucent: true
-            }}
-            />
-
+          <Navigation initialRoute={{id: 'More', title: 'Tùy chọn'}}/>
         </TabBarIOS.Item>
 
       </TabBarIOS>

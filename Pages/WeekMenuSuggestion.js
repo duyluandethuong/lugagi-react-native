@@ -28,7 +28,6 @@ var FoodCard = React.createClass({
 	        day: this.props.day,
 	        meal: this.props.meal,
 	        mealOrder: this.props.mealOrder,
-	        navigator: this.props.navigator,
 	        onPress: React.PropTypes.func,
 	        isVisible: 'true',
 	    };
@@ -44,7 +43,7 @@ var FoodCard = React.createClass({
 		if (contentType == "food" || contentType == "") {
 			this.props.navigator.push({
 			  title: 'Món ăn',
-			  component: FoodDetail,
+			  id: 'FoodDetail',
 			  passProps: {foodID: contentID},
 			});
 		}
@@ -222,7 +221,7 @@ var WeekMenuSuggestion = React.createClass({
 		if (contentType == "food" || contentType == "") {
 			this.props.navigator.push({
 			  title: 'Món ăn',
-			  component: FoodDetail,
+			  id: 'FoodDetail',
 			  passProps: {foodID: contentID}
 			});
 		}

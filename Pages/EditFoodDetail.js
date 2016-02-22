@@ -41,7 +41,7 @@ var styles = StyleSheet.create({
 var EditFoodDetail = React.createClass({
 	getInitialState: function() {
 		return {
-			foodID: this.props.foodID,
+			foodID: this.props.passProps.foodID,
 			foodObject: new Object(),
 			foodType: new Object(),
 		  	isLoading: true,
@@ -289,12 +289,10 @@ var EditFoodDetail = React.createClass({
 
 	goToFoodDetail: function() {
 		var FoodDetail = require('./FoodDetail.js');
-		this.props.navigator.resetTo({
+		this.props.navigator.push({
 			title: 'Món ăn',
-			component: FoodDetail,
-			passProps: {foodID: this.state.foodObject.MonAnID},
-			leftButtonTitle: 'Trang chủ',
-            onLeftButtonPress: () => this.goToHome(),
+			id: 'FoodDetail',
+			passProps: {foodID: this.state.foodObject.MonAnID}
 		});
 	},
 
@@ -349,7 +347,7 @@ var EditFoodDetail = React.createClass({
 
 					<View style={lugagistyle.form}>
 
-						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Tên món ăn</Text>
+						<Text style={[lugagistyle.formLabel]}>Tên món ăn</Text>
 						<View style={lugagistyle.formControl}>
 						  	<TextInput
 							    style={lugagistyle.formInput}
@@ -358,7 +356,7 @@ var EditFoodDetail = React.createClass({
 							    placeholder='Ví dụ: Cá lóc kho tộ'/>
 						</View>
 
-						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Mô tả</Text>
+						<Text style={[lugagistyle.formLabel]}>Mô tả</Text>
 						<View style={lugagistyle.formControl}>
 						  	<TextInput
 							    style={lugagistyle.formTextArea}
@@ -369,7 +367,7 @@ var EditFoodDetail = React.createClass({
 							    placeholder='Ví dụ: Cá lóc kho tộ là món ngon của miền Nam, rất đơn giản nhưng rất đậm đà'/>
 						</View>
 
-						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Cách chế biến</Text>
+						<Text style={[lugagistyle.formLabel]}>Cách chế biến</Text>
 						<View style={lugagistyle.formControl}>
 							<Text style={lugagistyle.buttonTextNormal}>{this.state.foodType.LoaiMonAnDescription}</Text>
 							<TouchableOpacity
@@ -380,7 +378,7 @@ var EditFoodDetail = React.createClass({
 
 						{foodTypePicker}
 
-						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Hình ảnh</Text>
+						<Text style={[lugagistyle.formLabel]}>Hình ảnh</Text>
 						<View style={lugagistyle.formControl}>
 							<TouchableOpacity
 							    onPress={this.onSelectImageClicked}>
@@ -392,7 +390,7 @@ var EditFoodDetail = React.createClass({
 							{spinner}
 						</View>
 
-						<Text style={[lugagistyle.formLabel, lugagistyle.textBold]}>Hoàn tất</Text>
+						<Text style={[lugagistyle.formLabel]}>Hoàn tất</Text>
 						<View style={lugagistyle.formControl}>
 							<TouchableOpacity 
 								style={[lugagistyle.buttonAccent]}

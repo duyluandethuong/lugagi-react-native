@@ -6,10 +6,50 @@ var {
   StyleSheet,
 } = React;
 
+import Dimensions from 'Dimensions';
+var screenWidth = Dimensions.get('window').width;
+
+var accentColor = '#FF5252';
+var primaryColor = '#607D8B';
+
 module.exports = StyleSheet.create({
 	appBodyContainer: {
 		flex: 1,
-		paddingBottom: 20
+		paddingTop: 45,
+		paddingBottom: 20,
+		marginTop: 20,
+		marginBottom: 44,
+		opacity: 1
+	},
+
+	navBar: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		height: 64,
+		width: screenWidth,
+		backgroundColor: primaryColor,
+		alignSelf: 'stretch',
+		justifyContent: 'center',
+	},
+
+	navBarLeftText: {
+		color: '#FFFFFF',
+		marginTop: 10,
+		marginLeft: 10,
+		fontSize: 17,
+	},
+
+	navBarTitle: {
+		color: '#FFFFFF',
+		marginTop: 10,
+		fontSize: 17,
+		fontWeight: '500',
+	},
+
+
+	whiteBackground: {
+		backgroundColor: '#FFFFFF',
 	},
 	center: {
 		alignSelf: 'stretch',
@@ -30,18 +70,20 @@ module.exports = StyleSheet.create({
 		marginLeft: 15,
 		marginRight: 15,
 	},
+
+
 	buttonTextAccent: {
 		fontSize: 18,
 		marginTop: 10,
 		marginBottom: 10,
-		color: '#FF5252',
+		color: accentColor,
 		alignSelf: 'center'
 	},
 	buttonTextPrimary: {
 		fontSize: 18,
 		marginTop: 10,
 		marginBottom: 10,
-		color: '#607D8B',
+		color: primaryColor,
 		alignSelf: 'center'
 	},
 	buttonTextNormal: {
@@ -60,7 +102,7 @@ module.exports = StyleSheet.create({
 		height: 36,
 		flex: 1,
 		borderWidth: 1,
-		borderColor: '#FF5252',
+		borderColor: accentColor,
 		borderRadius: 4,
 		alignSelf: 'stretch',
 		justifyContent: 'center'
@@ -69,20 +111,32 @@ module.exports = StyleSheet.create({
 		height: 36,
 		flex: 1,
 		borderWidth: 1,
-		borderColor: '#607D8B',
+		borderColor: primaryColor,
 		borderRadius: 4,
 		alignSelf: 'stretch',
 		justifyContent: 'center'
 	},
+
+
 	textAccent: {
-		color: '#FF5252'
+		color: accentColor
 	},
 	textAccentContrast: {
 		color: '#FFFDFF'
 	},
+
 	textPrimary: {
-		color: '#607D8B'
+		color: primaryColor
 	},
+
+	textWhite: {
+		color: '#FFFFFF'
+	},
+
+	textTitle: {
+		fontSize: 16
+	},
+
 	sectionTitle: {
 		fontSize: 20,
 		marginTop: 10,
@@ -95,6 +149,8 @@ module.exports = StyleSheet.create({
 		marginBottom: 5,
 		marginLeft: 5,
 	},
+
+
 	textInput: {
 		height: 36,
 		padding: 4,
@@ -104,7 +160,7 @@ module.exports = StyleSheet.create({
 		marginRight: 5,
 		fontSize: 16,
 		borderWidth: 1,
-		borderColor: '#607D8B',
+		borderColor: primaryColor,
 		borderRadius: 4,
 	},
 	textArea: {
@@ -116,23 +172,28 @@ module.exports = StyleSheet.create({
 		marginRight: 5,
 		fontSize: 16,
 		borderWidth: 1,
-		borderColor: '#607D8B',
+		borderColor: primaryColor,
 		borderRadius: 4,
 	},
+
 	textMuted: {
 		color: '#808080'
 	},
 	textBold: {
 		fontWeight: 'bold',
 	},
+
 	cardTitle: {
-		color: '#FF5252',
+		color: accentColor,
 		fontSize: 15,
 		fontWeight: 'bold',
 	},
 	picker: {
 		marginTop: -10,
 	},
+	
+
+
 	form: {
 		paddingTop: 5
 	},
@@ -146,7 +207,8 @@ module.exports = StyleSheet.create({
 	},
 	formLabel: {
 		marginLeft: 5,
-		marginBottom: 5
+		marginBottom: 5,
+		color: primaryColor,
 	},
 	formInput: {
 		borderWidth: 0,
@@ -160,39 +222,6 @@ module.exports = StyleSheet.create({
 		height: 100,
 		padding: 5,
 		fontSize: 16,
-	},
-	listViewContainer: {
-  		marginTop: 0,
-  		marginBottom: 5,
-		flex: 1,
-		height: 150,
-  	},
-  	listViewItemContainer: {
-  		marginRight: 5,
-	    padding: 5,
-	    alignItems: 'center',
-	    flex: 1,
-    	width: 150,
-	    height: 150,
-	    backgroundColor: '#F6F6F6',
-  	},
-  	rightContainer: {
-	    flex: 1,
-	},
-	image: {
-		width: 500,
-		height: 150,
-		justifyContent: 'center',
-		alignSelf: 'stretch',
-	},
-	thumb: {
-		width: 150,
-		height: 100
-	},
-	roundThumb: {
-		height: 100,
-		width: 100,
-		borderRadius: 50,
-	},
+	}
 
 });

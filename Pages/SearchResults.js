@@ -1,7 +1,6 @@
 'use strict';
  
 var React = require('react-native');
-var FoodDetail = require('./FoodDetail.js');
 var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
@@ -33,18 +32,20 @@ var styles = StyleSheet.create({
   }
 });
 
-class SearchResults extends Component {
- 
-  constructor(props) {
-    super(props);
+var SearchResults = React.createClass({
+
+  getInitialState: function() {
+
     var dataSource = new ListView.DataSource(
-      {rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      dataSource: dataSource.cloneWithRows(this.props.searchResultDataSource)
+                      {rowHasChanged: (r1, r2) => r1 !== r2});
+
+    return {
+        dataSource: dataSource.cloneWithRows(this.props.passProps.searchResultDataSource),
     };
-  }
+
+  },
  
-  renderRow(content) {
+  renderRow: function(content) {
     var fullImageURL = "http://lugagi.com/script/timthumb.php?src=" + content.ImageURL + "&w=200&h=200&q=50";
     return (
         <TouchableHighlight 
@@ -54,7 +55,8 @@ class SearchResults extends Component {
             <View style={styles.rowContainer}>
               <Image style={styles.thumb} source={{uri: fullImageURL}} />
               <View  style={styles.textContainer}>
-                <Text style={lugagistyle.cardTitle}>{content.MonAnName}</Text>
+                <Text style={[lugagistyle.textTitle]}>{content.MonAnName}</Text>
+                <Text/>
                 <Text style={lugagistyle.textMuted} 
                       numberOfLines={3}>{content.MonAnDescription}</Text>
               </View>
@@ -63,27 +65,28 @@ class SearchResults extends Component {
           </View>
         </TouchableHighlight>
       );
-  }
+  },
 
   //Navigate to the food page
-  contentItemPresses(contentID, contentType) {
+  contentItemPresses: function(contentID, contentType) {
     if (contentType == "food" || contentType == "") {
       this.props.navigator.push({
         title: 'Món ăn',
-        component: FoodDetail,
+        id: 'FoodDetail',
         passProps: {foodID: contentID}
       });
     }
-  }
+  },
 
-  render() {
+  render: function() {
     return (
       <ListView
+        style={lugagistyle.appBodyContainer}
         dataSource={this.state.dataSource}
         renderRow={this.renderRow.bind(this)}/>
     );
   }
  
-}
+});
 
 module.exports = SearchResults;

@@ -22,10 +22,6 @@ var {
 
 //Styling
 var styles = StyleSheet.create({
-	appBodyContainer: {
-		flex: 1,
-		marginBottom: 0,
-	},
   	foodInfoContainer: {
 		flex: 1,
   	},
@@ -117,7 +113,7 @@ var styles = StyleSheet.create({
 var FoodDetail = React.createClass({
 	getInitialState: function() {
 		return {
-			foodID: this.props.foodID,
+			foodID: this.props.passProps.foodID,
 			foodObject: new Object(),
 			foodType: new Object(),
 		  	foodPostDataSource: new ListView.DataSource({
@@ -202,10 +198,10 @@ var FoodDetail = React.createClass({
 	},
 
 	goToFoodDetailEdit: function() {
-		var EditFoodDetail = require('./EditFoodDetail.js');
 		this.props.navigator.push({
 		  	title: 'Sửa thông tin',
-		  	component: EditFoodDetail,
+		  	id: 'EditFoodDetail',
+		  	type: 'Modal',
 		  	passProps: {foodID: this.state.foodObject.MonAnID}
 		});
 	},
@@ -231,7 +227,7 @@ var FoodDetail = React.createClass({
 		}
 
 		return (
-			<ScrollView style={styles.appBodyContainer}>
+			<ScrollView style={lugagistyle.appBodyContainer}>
 				<View style={styles.foodInfoContainer}>
 					<View style={styles.heroFoodImageContainer}>
 						<Image source={{uri: fullImageURL}}

@@ -1,7 +1,6 @@
 'use strict';
  
 var React = require('react-native');
-var FoodDetail = require('./FoodDetail.js');
 var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
@@ -20,13 +19,9 @@ var {
 
 //Styling
 var styles = StyleSheet.create({
-	appBodyContainer: {
-		marginTop: 10,
-		flex: 1,
-	},
 	introduction: {
-		marginLeft: 20,
-		marginRight: 20,
+		marginLeft: 10,
+		marginRight: 10,
 	},
   	searchView: {
 		alignItems: 'center',
@@ -123,7 +118,7 @@ var IngredientSelection = React.createClass({
 		if (contentType == "food" || contentType == "") {
 			this.props.navigator.push({
 			  title: 'Món ăn',
-			  component: FoodDetail,
+			  id: 'FoodDetail',
 			  passProps: {foodID: contentID}
 			});
 		}
@@ -138,29 +133,34 @@ var IngredientSelection = React.createClass({
 			  size='large'/> ) :
 			( <View/>);
 	    return (
-	      	<ScrollView style={styles.appBodyContainer}>
-	      		<Text style={[lugagistyle.textMuted, styles.introduction]}>
-	      			Bạn có thể nhập nhiều nguyên liệu bằng cách dùng dấu phẩy khi nhập hoặc nhấn nút chèn nguyên liệu.
-	      		</Text>
-	      		<View style={styles.TextInputList}>
-		      		<TextInput
-						    style={lugagistyle.textInput}
-						    value={this.state.searchString}
-						    onChange={this.onSearchTextChanged}
-						    placeholder='Nhập tên món ăn hoặc bộ sưu tập'/>
+	      	<ScrollView style={[lugagistyle.appBodyContainer, lugagistyle.formBackground]}>
+	      		
+	      		<View style={lugagistyle.form}>
+
+	      			<Text style={[lugagistyle.formLabel]}>Nhập nguyên liệu, cách nhau bằng dấu phẩy</Text>
+		      		<View style={lugagistyle.formControl}>
+			      		<TextInput
+							    style={lugagistyle.formInput}
+							    value={this.state.searchString}
+							    onChange={this.onSearchTextChanged}
+							    placeholder='Ví dụ: ức gà, nấm hương, xà lách...'/>
+					</View>
+
+					<View style={lugagistyle.formControl}>
+						<TouchableOpacity 
+							style={lugagistyle.buttonAccent}
+						    underlayColor='#99d9f4'
+						    onPress={this.onSearchPressed}>
+						  <Text style={lugagistyle.buttonTextAccent}>Gợi ý</Text>
+						</TouchableOpacity>
+						{spinner}
+					</View>
 				</View>
-				<View>
-					<TouchableOpacity 
-						style={lugagistyle.buttonAccent}
-					    underlayColor='#99d9f4'
-					    onPress={this.onSearchPressed}>
-					  <Text style={lugagistyle.buttonTextAccent}>Gợi ý</Text>
-					</TouchableOpacity>
-					{spinner}
-				</View>
+
 				<ListView
 			        dataSource={this.state.searchResultDataSource}
-			        renderRow={this.renderRow}/>
+			        renderRow={this.renderRow}
+			        style={lugagistyle.whiteBackground}/>
 	      	</ScrollView>
 	    );
   	},
