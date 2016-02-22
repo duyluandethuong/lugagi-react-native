@@ -3,12 +3,13 @@
 var React = require('react-native');
 var LoginPage = require('./LoginPage.js');
 var ListCustomMenu = require('./ListCustomMenu.js');
+var lugagistyle = require('../Styles/lugagistyle.js');
 
 var {
   StyleSheet,
   Image, 
   View,
-  TouchableHighlight,
+  TouchableOpacity,
   ListView,
   Text,
   Component,
@@ -165,33 +166,33 @@ var More = React.createClass({
     //Render login logout button according to the state of the current user
     if (this.state.currentUserID) {
       var CurrentUserMenuListItem = (
-        <TouchableHighlight underlayColor='#99d9f4' key={test[0]}>
+        <TouchableOpacity underlayColor='#99d9f4' key={test[0]}>
           <View style={styles.menuList}>
             <Image source={{uri: this.state.currentUserProfileImageURL}}
                 style={styles.profilePic}/>
             <Text style={styles.menuListText}>{this.state.currentUsername}</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       );
 
       var LoginLogoutMenuListItem = (
-          <TouchableHighlight underlayColor='#99d9f4' onPress={this.logOutConfirm} key={test[1]}>
+          <TouchableOpacity underlayColor='#99d9f4' onPress={this.logOutConfirm} key={test[1]}>
             <View style={styles.menuList}>
               <Image source={{uri: this.state.currentUserProfileImageURL}}
                   style={styles.profilePic}/>
               <Text style={styles.menuListText}>Đăng xuất</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
       );
 
       var ListCustomMenuItem = (
-          <TouchableHighlight underlayColor='#99d9f4' onPress={this.listCustomMenu} key={test[2]}>
+          <TouchableOpacity underlayColor='#99d9f4' onPress={this.listCustomMenu} key={test[2]}>
             <View style={styles.menuList}>
               <Image source={{uri: this.state.currentUserProfileImageURL}}
                   style={styles.profilePic}/>
               <Text style={styles.menuListText}>Xem các thực đơn đã tạo</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
       );
 
       ScrollViewList.push(CurrentUserMenuListItem);
@@ -201,13 +202,13 @@ var More = React.createClass({
     }
     else {
       var LoginLogoutMenuListItem = (
-          <TouchableHighlight underlayColor='#99d9f4' onPress={this.logInProcess} key={test[2]}>
+          <TouchableOpacity underlayColor='#99d9f4' onPress={this.logInProcess} key={test[2]}>
             <View style={styles.menuList}>
               <Image source={{uri: this.state.currentUserProfileImageURL}}
                   style={styles.profilePic}/>
               <Text style={styles.menuListText}>Đăng nhập</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
       );
 
       ScrollViewList.push(LoginLogoutMenuListItem);
@@ -215,7 +216,7 @@ var More = React.createClass({
 
     //Final render for the whole list of options on this page
     return (
-      <ScrollView style={styles.appBodyContainer}>
+      <ScrollView style={lugagistyle.appBodyContainer}>
 
         {ScrollViewList}
 

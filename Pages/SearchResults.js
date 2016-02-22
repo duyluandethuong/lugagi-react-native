@@ -55,7 +55,7 @@ var SearchResults = React.createClass({
             <View style={styles.rowContainer}>
               <Image style={styles.thumb} source={{uri: fullImageURL}} />
               <View  style={styles.textContainer}>
-                <Text style={[lugagistyle.textAccent, lugagistyle.textTitle]}>{content.MonAnName}</Text>
+                <Text style={[lugagistyle.textTitle]}>{content.MonAnName}</Text>
                 <Text/>
                 <Text style={lugagistyle.textMuted} 
                       numberOfLines={3}>{content.MonAnDescription}</Text>

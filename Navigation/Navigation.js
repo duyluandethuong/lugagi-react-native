@@ -19,6 +19,8 @@ var EditFoodDetail = require('../Pages/EditFoodDetail.js');
 var SearchPage = require('../Pages/SearchPage.js');
 var SearchResults = require('../Pages/SearchResults');
 
+var More = require('../Pages/More.js');
+
 var lugagistyle = require('../Styles/lugagistyle.js');
 
 
@@ -121,6 +123,9 @@ var Navigation = React.createClass({
         return (<SearchPage navigator={navigator} title="Trang chủ" passProps={route.passProps}/>);
       case 'SearchResults':
         return (<SearchResults navigator={navigator} title="Trang chủ" passProps={route.passProps}/>);
+
+      case 'More':
+        return (<More navigator={navigator} title="Trang chủ" passProps={route.passProps}/>);
     }
   },
 });

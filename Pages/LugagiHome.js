@@ -294,6 +294,7 @@ var LugagiHome = React.createClass({
 				    dataSource={this.state.editorPickedSource}
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
+				    initialListSize={3}
 				    horizontal={true}/>
 
 				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Món ăn mới nhất</Text>
@@ -302,6 +303,7 @@ var LugagiHome = React.createClass({
 				    renderRow={this.renderContentList}
 				    style={styles.listViewContainer}
 				    contentContainerStyle={styles.list}
+				    initialListSize={3}
 				    horizontal={true}/>
 
 				<Text style={[lugagistyle.textPrimary, lugagistyle.sectionTitle]}>Có thể bạn thích</Text>
@@ -316,6 +318,7 @@ var LugagiHome = React.createClass({
 				    dataSource={this.state.newUsersInfoSource}
 				    renderRow={this.renderUserList}
 				    style={styles.listViewContainer}
+				    initialListSize={3}
 				    horizontal={true}/>
 
 			</ScrollView>

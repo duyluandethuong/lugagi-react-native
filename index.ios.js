@@ -143,17 +143,7 @@ var LugagiApp = React.createClass({
           onPress={() => {
                             this.setTab("more");
                           }}>
-
-          <React.NavigatorIOS
-            style={styles.container}
-            tintColor='#FF5252'
-            initialRoute={{
-              title: 'Tùy chọn',
-              component: More,
-              translucent: true
-            }}
-            />
-
+          <Navigation initialRoute={{id: 'More', title: 'Tùy chọn'}}/>
         </TabBarIOS.Item>
 
       </TabBarIOS>
