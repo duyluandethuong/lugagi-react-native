@@ -67,7 +67,7 @@ var IngredientSelection = React.createClass({
 		var searchString = this.state.searchString;
 
 		if (searchString =! null) {
-			var searchURL = "http://lugagi.com/script/ingredientRecommendation/generateFoodSuggestion.php?ingredientname[]=" + this.state.searchString;
+			var searchURL = "http://lugagi.com/script/ingredientRecommendation/generateFoodSuggestion.php?ingredientname[]=" + this.state.searchString + "&IngredientPage=1&FoodPage=1";
 			console.log(searchURL);
 			//Display the loading icon
 			this.setState({ isLoading: true });
@@ -77,7 +77,7 @@ var IngredientSelection = React.createClass({
 		    .then((responseData) => {
 		    	console.log(responseData);
 		      	this.setState({
-		      		searchResultDataSource: this.state.searchResultDataSource.cloneWithRows(responseData.Foods)
+		      		searchResultDataSource: this.state.searchResultDataSource.cloneWithRows(responseData.IngredientFoods.Foods)
 		    	});
 		    })
 		    .done(() => {
